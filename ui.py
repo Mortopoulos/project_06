@@ -3,6 +3,7 @@ from tkinter import Label
 from tkinter import Button
 from tkinter import Menu
 from tkinter import Frame
+from tkinter import Entry
 
 
 class Ui:
@@ -41,10 +42,26 @@ class Ui:
                 root.add_command(label=k, command=v)
         self.window.config(menu=root)
 
+    def gen_form(self, row, *args):
+        fields = []
+        row = row
+        for arg in args:
+            Label(self.app, text=arg).grid(row=row, column=0)
+            fields.append(Entry(self.app).grid(row=row, column=1))
+            row += 1
+
+        return fields
+
     def render_client_form(self):
         self.clear_app()
-        self.test = Label(self.app, text='hello').grid()
-        self.test = Label(self.app, text='test').grid()
+        app = self.app
+        Label(app, text='Προσθήκη νέου πελάτη').grid()
+        (
+            uid,
+            name,
+            phone,
+            email,
+        ) = self.gen_form(1, 'ID:', 'Όνομα:', 'Τηλέφωνο:', 'Email:')
 
     def render_clients_to_delete(self):
         self.clear_app()
