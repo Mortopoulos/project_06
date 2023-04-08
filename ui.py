@@ -48,6 +48,14 @@ class Ui:
 
     def render_clients_to_delete(self):
         self.clear_app()
+
+        def delete_client(self, id):
+            def inner():
+                self.client_manager.delete_client(id)
+                self.render_clients_to_delete()
+
+            return inner
+
         for i, client in enumerate(self.client_manager.get_all_clients()):
             Label(
                 self.app,
@@ -56,15 +64,8 @@ class Ui:
             Button(
                 self.app,
                 text='delete',
-                command=self.delete_client(client[0]),
+                command=delete_client(client[0]),
             ).grid(row=i, column=1)
-
-    def delete_client(self, id):
-        def inner():
-            self.client_manager.delete_client(id)
-            self.render_clients_to_delete()
-
-        return inner
 
     def render_about(self):
         self.clear_app()
