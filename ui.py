@@ -4,6 +4,7 @@ from tkinter import Button
 from tkinter import Menu
 from tkinter import Frame
 from tkinter import Entry
+from tkinter import StringVar
 
 
 class Ui:
@@ -12,8 +13,10 @@ class Ui:
         self.window = Tk()
         self.window.title('Appointments Management')
         self.render_menu()
+        self.message = StringVar()
         self.app = Frame(self.window)
         self.app.grid()
+        self.render_home()
         self.window.mainloop()
 
     def clear_app(self):
@@ -42,12 +45,18 @@ class Ui:
                 root.add_command(label=k, command=v)
         self.window.config(menu=root)
 
+    def render_home(self):
+        self.clear_app()
+        Label(self.app, textvariable=self.message).grid()
+
     def gen_form(self, row, *args):
         fields = []
         row = row
         for arg in args:
             Label(self.app, text=arg).grid(row=row, column=0)
-            fields.append(Entry(self.app).grid(row=row, column=1))
+            var = StringVar()
+            fields.append(var)
+            Entry(self.app, textvariable=var).grid(row=row, column=1)
             row += 1
 
         return fields
@@ -56,12 +65,18 @@ class Ui:
         self.clear_app()
         app = self.app
         Label(app, text='Προσθήκη νέου πελάτη').grid()
-        (
-            uid,
-            name,
-            phone,
-            email,
-        ) = self.gen_form(1, 'ID:', 'Όνομα:', 'Τηλέφωνο:', 'Email:')
+        uid, name, phone, email = self.gen_form(
+            1, 'ID:', 'Όνομα:', 'Τηλέφωνο:', 'Email:'
+        )
+
+        def show():
+            self.client_manager.add_client(
+                uid.get(), name.get(), phone.get(), email.get()
+            )
+            self.message.set('Client added')
+            self.render_home()
+
+        Button(app, text='Submit', command=show).grid()
 
     def render_clients_to_delete(self):
         self.clear_app()
