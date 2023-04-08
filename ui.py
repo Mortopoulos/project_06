@@ -4,8 +4,6 @@ from tkinter import Button
 from tkinter import Menu
 from tkinter import Frame
 
-from functools import partial
-
 
 class Ui:
     def __init__(self, client_manager):
@@ -58,7 +56,7 @@ class Ui:
             Button(
                 self.app,
                 text='delete',
-                command=partial(self.delete_client(client[0])),
+                command=self.delete_client(client[0]),
             ).grid(row=i, column=1)
 
     def delete_client(self, id):
