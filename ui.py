@@ -39,32 +39,32 @@ class Ui:
         self.notebook.pack(expand=True, fill=tk.BOTH)
 
         # Create the Customer Management tab
-        self.customer_tab = ttk.Frame(self.root)
-        self.notebook.add(self.customer_tab, text="Customer Management")
+        self.client_tab = ttk.Frame(self.root)
+        self.notebook.add(self.client_tab, text="Customer Management")
 
         # Create the Appointment Management tab
         self.appointment_tab = ttk.Frame(self.root)
         self.notebook.add(self.appointment_tab, text="Appointment Management")
 
         # Set up the content for each tab
-        self.create_customer_tab_content()
+        self.create_client_tab_content()
         # self.create_appointment_tab_content()
 
         self.root.mainloop()
 
-    def populate_customers_listbox(self):
+    def populate_clients_listbox(self):
         # Clear the current listbox content
-        for item in self.customers_listbox.get_children():
-            self.customers_listbox.delete(item)
+        for item in self.clients_listbox.get_children():
+            self.clients_listbox.delete(item)
 
-        # Fetch customers from the database
-        customers = self.client_manager.get_all_clients()
-        print(customers)
+        # Fetch clients from the database
+        clients = self.client_manager.get_all_clients()
+        print(clients)
 
-        # Populate the listbox with customer data
-        for customer in customers:
-            customer_id, first_name, last_name, phone, email = customer
-            self.customers_listbox.insert(
+        # Populate the listbox with client data
+        for client in clients:
+            client_id, first_name, last_name, phone, email = client
+            self.clients_listbox.insert(
                 "", tk.END, values=(first_name, last_name, phone, email)
             )
 
@@ -78,94 +78,103 @@ class Ui:
         self.last_name_entry.delete(0, tk.END)
         self.phone_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
-        self.populate_customers_listbox()
+        self.populate_clients_listbox()
 
-    def create_customer_tab_content(self):
+    def update_client(self):
+        pass
+
+    def delete_client(self):
+        pass
+
+    def search_client(self):
+        pass
+
+    def create_client_tab_content(self):
         # First Name
-        ttk.Label(self.customer_tab, text="First Name:").grid(
+        ttk.Label(self.client_tab, text="First Name:").grid(
             row=0, column=0, padx=10, pady=10, sticky=tk.W
         )
-        self.first_name_entry = ttk.Entry(self.customer_tab)
+        self.first_name_entry = ttk.Entry(self.client_tab)
         self.first_name_entry.grid(row=0, column=1, padx=10, pady=10, sticky=tk.W)
 
         # Last Name
-        ttk.Label(self.customer_tab, text="Last Name:").grid(
+        ttk.Label(self.client_tab, text="Last Name:").grid(
             row=1, column=0, padx=10, pady=10, sticky=tk.W
         )
-        self.last_name_entry = ttk.Entry(self.customer_tab)
+        self.last_name_entry = ttk.Entry(self.client_tab)
         self.last_name_entry.grid(row=1, column=1, padx=10, pady=10, sticky=tk.W)
 
         # Phone
-        ttk.Label(self.customer_tab, text="Phone:").grid(
+        ttk.Label(self.client_tab, text="Phone:").grid(
             row=2, column=0, padx=10, pady=10, sticky=tk.W
         )
-        self.phone_entry = ttk.Entry(self.customer_tab)
+        self.phone_entry = ttk.Entry(self.client_tab)
         self.phone_entry.grid(row=2, column=1, padx=10, pady=10, sticky=tk.W)
 
         # Email
-        ttk.Label(self.customer_tab, text="Email:").grid(
+        ttk.Label(self.client_tab, text="Email:").grid(
             row=3, column=0, padx=10, pady=10, sticky=tk.W
         )
-        self.email_entry = ttk.Entry(self.customer_tab)
+        self.email_entry = ttk.Entry(self.client_tab)
         self.email_entry.grid(row=3, column=1, padx=10, pady=10, sticky=tk.W)
 
-        self.search_customer_var = tk.StringVar()
-        self.search_customer_entry = ttk.Entry(
-            self.customer_tab, textvariable=self.search_customer_var
+        self.search_client_var = tk.StringVar()
+        self.search_client_entry = ttk.Entry(
+            self.client_tab, textvariable=self.search_client_var
         )
-        self.search_customer_entry.grid(row=6, column=0, pady=5)
+        self.search_client_entry.grid(row=6, column=0, pady=5)
 
         # Buttons
-        self.add_customer_button = ttk.Button(
-            self.customer_tab,
+        self.add_client_button = ttk.Button(
+            self.client_tab,
             text="Add Customer",
             command=self.add_client,
         )
-        self.add_customer_button.grid(row=4, column=0, padx=10, pady=10, sticky=tk.W)
+        self.add_client_button.grid(row=4, column=0, padx=10, pady=10, sticky=tk.W)
 
-        self.update_customer_button = ttk.Button(
-            self.customer_tab,
+        self.update_client_button = ttk.Button(
+            self.client_tab,
             text="Update Customer",
-            command=self.client_manager.update_client,
+            command=self.update_client,
         )
-        self.update_customer_button.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W)
+        self.update_client_button.grid(row=4, column=1, padx=10, pady=10, sticky=tk.W)
 
-        self.delete_customer_button = ttk.Button(
-            self.customer_tab,
+        self.delete_client_button = ttk.Button(
+            self.client_tab,
             text="Delete Customer",
-            command=self.client_manager.delete_client,
+            command=self.delete_client,
         )
-        self.delete_customer_button.grid(row=4, column=2, padx=10, pady=10, sticky=tk.W)
+        self.delete_client_button.grid(row=4, column=2, padx=10, pady=10, sticky=tk.W)
 
-        self.search_customer_button = ttk.Button(
-            self.customer_tab,
+        self.search_client_button = ttk.Button(
+            self.client_tab,
             text="Search Customer",
-            command=self.client_manager.search_client,
+            command=self.search_client,
         )
-        self.search_customer_button.grid(row=6, column=1, padx=10, pady=10, sticky=tk.W)
+        self.search_client_button.grid(row=6, column=1, padx=10, pady=10, sticky=tk.W)
 
-        # Listbox to display customers
-        self.customers_listbox = ttk.Treeview(
-            self.customer_tab,
+        # Listbox to display clients
+        self.clients_listbox = ttk.Treeview(
+            self.client_tab,
             columns=("First Name", "Last Name", "Phone", "Email"),
             show="headings",
         )
-        self.customers_listbox.heading("First Name", text="First Name")
-        self.customers_listbox.heading("Last Name", text="Last Name")
-        self.customers_listbox.heading("Phone", text="Phone")
-        self.customers_listbox.heading("Email", text="Email")
-        self.customers_listbox.grid(
+        self.clients_listbox.heading("First Name", text="First Name")
+        self.clients_listbox.heading("Last Name", text="Last Name")
+        self.clients_listbox.heading("Phone", text="Phone")
+        self.clients_listbox.heading("Email", text="Email")
+        self.clients_listbox.grid(
             row=5, column=0, columnspan=3, padx=10, pady=10, sticky=tk.W + tk.E
         )
 
         # Scrollbar for the listbox
-        self.customers_listbox_scrollbar = ttk.Scrollbar(
-            self.customer_tab, orient="vertical", command=self.customers_listbox.yview
+        self.clients_listbox_scrollbar = ttk.Scrollbar(
+            self.client_tab, orient="vertical", command=self.clients_listbox.yview
         )
-        self.customers_listbox_scrollbar.grid(row=5, column=3, sticky=tk.N + tk.S)
-        self.customers_listbox.configure(
-            yscrollcommand=self.customers_listbox_scrollbar.set
+        self.clients_listbox_scrollbar.grid(row=5, column=3, sticky=tk.N + tk.S)
+        self.clients_listbox.configure(
+            yscrollcommand=self.clients_listbox_scrollbar.set
         )
 
-        # Populate the listbox with existing customers (from the database)
-        self.populate_customers_listbox()
+        # Populate the listbox with existing clients (from the database)
+        self.populate_clients_listbox()
