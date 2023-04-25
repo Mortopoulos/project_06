@@ -16,20 +16,15 @@ class ClientManager:
         )
         self.conn.commit()
 
-    # Προσθέτει ψεύτικους χρήστες
-    def add_test_clients(self):
-        clients = [
-            (1, "user1", 123, "1@gmail"),
-            (2, "user2", 124, "2@gmail"),
-            (3, "user3", 125, "3@gmail"),
-            (4, "user4", 126, "4@gmail"),
-        ]
-        for c in clients:
-            self.add_client(*c)
-
     def delete_client(self, id):
         self.cursor.execute("DELETE FROM clients WHERE id=?", (id,))
         self.conn.commit()
+
+    def search_client(self):
+        pass
+
+    def update_client(self):
+        pass
 
     def get_all_clients(self):
         self.cursor.execute("SELECT * FROM clients")
