@@ -20,7 +20,7 @@ class Ui:
         # Set up the main window
         self.root.title("Appointment Management")
         self.root.geometry("1800x1000")
-        # self.root.center_window()
+        self.center_window()
 
         # Apply styles for the tabs
         self.root.style = ttk.Style()
@@ -51,6 +51,15 @@ class Ui:
         # self.create_appointment_tab_content()
 
         self.root.mainloop()
+
+    def center_window(self):
+        # Center the window on the screen
+        self.root.update_idletasks()
+        width = self.root.winfo_width()
+        height = self.root.winfo_height()
+        x = (self.root.winfo_screenwidth() // 2) - (width // 2)
+        y = (self.root.winfo_screenheight() // 2) - (height // 2)
+        self.root.geometry("{}x{}+{}+{}".format(width, height, x, y))
 
     def populate_clients_listbox(self):
         # Clear the current listbox content
