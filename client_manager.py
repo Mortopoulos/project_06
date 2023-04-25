@@ -6,13 +6,19 @@ class ClientManager:
         self.conn = sqlite3.connect(db_file)
         self.cursor = self.conn.cursor()
         self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS clients (id TEXT, name TEXT, phone TEXT, email TEXT)"
+            """CREATE TABLE IF NOT EXISTS clients (
+                            id INTEGER PRIMARY KEY,
+                            first_name TEXT,
+                            last_name TEXT,
+                            phone TEXT,
+                            email TEXT)"""
         )
         self.conn.commit()
 
-    def add_client(self, id, name, phone, email):
+    def add_client(self, first_name, last_name, phone, email):
         self.cursor.execute(
-            "INSERT INTO clients VALUES (?, ?, ?, ?)", (id, name, phone, email)
+            "INSERT INTO clients (first_name, last_name, phone, email) VALUES (?, ?, ?, ?)",
+            (first_name, last_name, phone, email),
         )
         self.conn.commit()
 
