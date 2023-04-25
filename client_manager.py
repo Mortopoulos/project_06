@@ -15,6 +15,7 @@ class ClientManager:
             'INSERT INTO clients VALUES (?, ?, ?, ?)', (id, name, phone, email)
         )
         self.conn.commit()
+        
 
     # Προσθέτει ψεύτικους χρήστες
     def add_test_clients(self):
@@ -35,5 +36,9 @@ class ClientManager:
         self.cursor.execute('SELECT * FROM clients')
         return self.cursor.fetchall()
 
+    def get_client(self, client_id):
+        all_clients = self.get_all_clients() 
+        return [client for client in all_clients if client[0] == client_id][0]
+    
     def __del__(self):
         self.conn.close()
