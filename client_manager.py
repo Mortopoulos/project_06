@@ -6,13 +6,13 @@ class ClientManager:
         self.conn = sqlite3.connect(db_file)
         self.cursor = self.conn.cursor()
         self.cursor.execute(
-            'CREATE TABLE IF NOT EXISTS clients (id TEXT, name TEXT, phone TEXT, email TEXT)'
+            'CREATE TABLE IF NOT EXISTS clients (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT)'
         )
         self.conn.commit()
 
-    def add_client(self, id, name, phone, email):
+    def add_client(self, name, phone, email):
         self.cursor.execute(
-            'INSERT INTO clients VALUES (?, ?, ?, ?)', (id, name, phone, email)
+            'INSERT INTO clients (name, phone, email) VALUES (?, ?, ?)', (name, phone, email)
         )
         self.conn.commit()
         
@@ -20,10 +20,10 @@ class ClientManager:
     # Προσθέτει ψεύτικους χρήστες
     def add_test_clients(self):
         clients = [
-            (1, 'user1', 123, '1@gmail'),
-            (2, 'user2', 124, '2@gmail'),
-            (3, 'user3', 125, '3@gmail'),
-            (4, 'user4', 126, '4@gmail'),
+            ('user1', 123, '1@gmail'),
+            ('user2', 124, '2@gmail'),
+            ('user3', 125, '3@gmail'),
+            ('user4', 126, '4@gmail'),
         ]
         for c in clients:
             self.add_client(*c)
@@ -34,6 +34,10 @@ class ClientManager:
 
     def get_all_clients(self):
         self.cursor.execute('SELECT * FROM clients')
+        return self.cursor.fetchall()
+
+    def search_clients_by_number(self, number_input):
+        self.cursor.execute(f"SELECT * FROM clients WHERE phone LIKE '{number_input}%'")
         return self.cursor.fetchall()
 
     def get_client(self, client_id):
