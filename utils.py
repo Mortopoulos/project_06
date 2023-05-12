@@ -14,19 +14,19 @@ from openpyxl.styles.fills import PatternFill
 from openpyxl.utils import get_column_letter
 
 
-def export_all_appointments_to_xlsx(appointment_manager, client_manager, destination_folder_path):
+def export_all_appointments_to_xlsx(
+    appointment_manager, client_manager, destination_folder_path
+):
     wb = Workbook()
     sheet = wb.active
 
-    headings = ["ID", "Client", "Email", "Phone",
-                "Name", "Date", "Time (Minutes)"]
+    headings = ["ID", "Client", "Email", "Phone", "Name", "Date", "Time (Minutes)"]
     for col_num, heading in enumerate(headings, 1):
         col_letter = get_column_letter(col_num)
         cell = sheet[f"{col_letter}1"]
         cell.value = heading
         cell.font = Font(bold=True)
-        cell.fill = PatternFill(patternType='solid',
-                                fgColor=Color(rgb='C6EFCE'))
+        cell.fill = PatternFill(patternType="solid", fgColor=Color(rgb="C6EFCE"))
 
     appointments = appointment_manager.get_all_appointments()
     # (id , name , date , time , client_id )
@@ -51,24 +51,29 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     email = user[3]
     pass_code = user[4]
     smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+
     smtp_server.starttls()
     # smtp_server.login('dr.georgepapadopoulos@gmail.com', 'sphgkfocygdxfneu')
     smtp_server.login(email, pass_code)
 
     for appointment in appointment_manager.get_appointments_on_date(date):
-        date = datetime.strptime(appointment[2], '%Y-%m-%d %H:%M:%S')
+        date = datetime.strptime(appointment[2], "%Y-%m-%d %H:%M:%S")
         import locale
-        locale.setlocale(locale.LC_TIME, 'el_GR')
+
+        locale.setlocale(locale.LC_TIME, "el_GR")
         date_time = date.strftime("%A, %d-%b-%Y, %H:%M:%S")
         client = client_manager.get_client(appointment[4])
         message = MIMEText(
-            f"Αγαπητέ/ή {client[1]},\n\nΑυτή είναι μια φιλική υπενθύμιση ότι έχετε ραντεβού μαζί μας στις {date_time}.\nΠαρακαλούμε, ενημερώστε μας εκ των προτέρων εαν χρειαστεί να αναπρογραμματίσετε ή να ακυρώσετε το ραντεβού σας.\n\nΜε τους θερμότερους χαιρετισμούς,\n\nΗ ομάδα του SchedulEase.")
-        message['Subject'] = 'Υπενθύμιση ραντεβού'
-        message['From'] = 'dr.georgepapadopoulos@gmail.com'
+            f"Αγαπητέ/ή {client[1]},\n\nΑυτή είναι μια φιλική υπενθύμιση ότι έχετε ραντεβού μαζί μας στις {date_time}.\nΠαρακαλούμε, ενημερώστε μας εκ των προτέρων εαν χρειαστεί να αναπρογραμματίσετε ή να ακυρώσετε το ραντεβού σας.\n\nΜε τους θερμότερους χαιρετισμούς,\n\nΗ ομάδα του SchedulEase."
+        )
+        message["Subject"] = "Υπενθύμιση ραντεβού"
+        message["From"] = "dr.georgepapadopoulos@gmail.com"
         # message['From'] = email
-        message['To'] = client[3]
+        message["To"] = client[3]
 
-        smtp_server.sendmail('dr.georgepapadopoulos@gmail.com', client[3], message.as_string())
+        smtp_server.sendmail(
+            "dr.georgepapadopoulos@gmail.com", client[3], message.as_string()
+        )
         # smtp_server.sendmail(email, client[3], message.as_string())
 
     smtp_server.quit()

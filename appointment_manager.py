@@ -23,17 +23,16 @@ class AppointmentManager:
         self.conn.commit()
 
     def delete_appointment(self, appointment_id):
-        self.cursor.execute(
-            'DELETE FROM appointments WHERE id=?', (appointment_id))
+        self.cursor.execute("DELETE FROM appointments WHERE id=?", (appointment_id))
         self.conn.commit()
 
     def get_all_appointments(self):
-        self.cursor.execute('SELECT * FROM appointments')
+        self.cursor.execute("SELECT * FROM appointments")
         return self.cursor.fetchall()
 
     def get_appointment(self, appointment_id):
-        all_appointments = self.get_all_appointments()
-        return [appointment for appointment in all_appointments if appointment[0] == appointment_id][0]
+        self.cursor.execute("SELECT * FROM appointments WHERE appointment_id = ?", (appointment_id,))
+        return self.cursor.fetchone()
 
     def edit_appointment(self, appointment_id, name, date, duration, client_id, employee_id):
         self.cursor.execute(
@@ -44,19 +43,23 @@ class AppointmentManager:
 
     def get_appointments_on_date(self, date):
         self.cursor.execute(
-            'SELECT * FROM appointments WHERE DATE(date)=DATE(?)', (date,))
+            "SELECT * FROM appointments WHERE DATE(date)=DATE(?)", (date,)
+        )
         return self.cursor.fetchall()
 
     def get_appointments_for_client(self, client_id):
         self.cursor.execute(
-            'SELECT * FROM appointments WHERE client_id=?', (client_id,))
+            "SELECT * FROM appointments WHERE client_id=?", (client_id,)
+        )
         return self.cursor.fetchall()
 
     def get_appointments_for_client_on_date(self, client_id, date):
         self.cursor.execute(
-            'SELECT * FROM appointments WHERE client_id=? AND DATE(date)=DATE(?)', (client_id, date))
+            "SELECT * FROM appointments WHERE client_id=? AND DATE(date)=DATE(?)",
+            (client_id, date),
+        )
         return self.cursor.fetchall()
-
+      
     def get_appointments_for_employee(self, employee_id):
         self.cursor.execute(
             'SELECT * FROM appointments WHERE employee_id=?', (employee_id,))
