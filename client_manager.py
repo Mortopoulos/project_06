@@ -7,7 +7,7 @@ class ClientManager:
         self.cursor = self.conn.cursor()
         self.cursor.execute(
             """CREATE TABLE IF NOT EXISTS clients (
-                            id INTEGER PRIMARY KEY,
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
                             first_name TEXT,
                             last_name TEXT,
                             phone TEXT,
@@ -34,6 +34,10 @@ class ClientManager:
 
     def get_all_clients(self):
         self.cursor.execute("SELECT * FROM clients")
+        return self.cursor.fetchall()
+
+    def search_clients_by_number(self, number_input):
+        self.cursor.execute(f"SELECT * FROM clients WHERE phone LIKE '{number_input}%'")
         return self.cursor.fetchall()
 
     def get_client(self, client_id):

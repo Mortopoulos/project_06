@@ -1,4 +1,5 @@
 import sqlite3
+from datetime import datetime, timedelta
 
 
 class AppointmentManager:
@@ -6,27 +7,20 @@ class AppointmentManager:
         self.conn = sqlite3.connect(db_file)
         self.cursor = self.conn.cursor()
         self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS appointments (id TEXT, name TEXT, date DATETIME, time TEXT, client_id TEXT)"
+            'CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date DATETIME, duration INTEGER, client_id INTEGER, employee_id INTEGER)'
         )
         self.conn.commit()
 
-    def add_appointment(self, appointment_id, name, date, time, client_id):
+    def add_appointment(self, name, date, duration, client_id, employee_id):
+        overlapping_appointments = self.get_overlapping_appointments(date, duration)
+        if overlapping_appointments:
+            raise ValueError(f"We have overlapping appointments:{overlapping_appointments}")
+            
         self.cursor.execute(
-            "INSERT INTO appointments VALUES (?, ?, ?, ?, ?)",
-            (appointment_id, name, date, time, client_id),
+            'INSERT INTO appointments (name, date, duration, client_id, employee_id) VALUES (?, ?, ?, ?, ?)',
+            (name, date, duration, client_id, employee_id)
         )
         self.conn.commit()
-
-    # Προσθέτει ψεύτικους χρήστες
-    # def add_test_appointments(self):
-    #     appointments = [
-    #         (1, 'user1', 123, '1@gmail'),
-    #         (2, 'user2', 124, '2@gmail'),
-    #         (3, 'user3', 125, '3@gmail'),
-    #         (4, 'user4', 126, '4@gmail'),
-    #     ]
-    #     for c in appointments:
-    #         self.add_client(*c)
 
     def delete_appointment(self, appointment_id):
         self.cursor.execute("DELETE FROM appointments WHERE id=?", (appointment_id))
@@ -37,17 +31,13 @@ class AppointmentManager:
         return self.cursor.fetchall()
 
     def get_appointment(self, appointment_id):
-        all_appointments = self.get_all_appointments()
-        return [
-            appointment
-            for appointment in all_appointments
-            if appointment[0] == appointment_id
-        ][0]
+        self.cursor.execute("SELECT * FROM appointments WHERE appointment_id = ?", (appointment_id,))
+        return self.cursor.fetchone()
 
-    def edit_appointment(self, appointment_id, name, date, time, client_id):
+    def edit_appointment(self, appointment_id, name, date, duration, client_id, employee_id):
         self.cursor.execute(
-            "UPDATE appointments SET name=?, date=?, time=?, client_id=? WHERE id=?",
-            (name, date, time, client_id, appointment_id),
+            'UPDATE appointments SET name=?, date=?, duration=?, client_id=?, employee_id=? WHERE id=?',
+            (name, date, duration, client_id, employee_id, appointment_id)
         )
         self.conn.commit()
 
@@ -69,6 +59,29 @@ class AppointmentManager:
             (client_id, date),
         )
         return self.cursor.fetchall()
+      
+    def get_appointments_for_employee(self, employee_id):
+        self.cursor.execute(
+            'SELECT * FROM appointments WHERE employee_id=?', (employee_id,))
+        return self.cursor.fetchall()
 
     def __del__(self):
         self.conn.close()
+
+    def get_overlapping_appointments(self, start_time, duration, exception_appointment_id=None):
+        end_time = start_time + timedelta(minutes=duration)
+        if exception_appointment_id is None:
+
+            self.cursor.execute(
+                "SELECT * FROM appointments WHERE date < ? AND datetime(date, '+' || ? || ' minutes') > ?", (
+                    end_time, duration, start_time)
+            )
+        else:
+
+            self.cursor.execute(
+                "SELECT * FROM appointments WHERE date < ? AND datetime(date, '+' || ? || ' minutes') > ? AND id != ?", (
+                    end_time, duration, start_time, exception_appointment_id)
+            )
+        overlapping_appointments = self.cursor.fetchall()
+        return overlapping_appointments
+

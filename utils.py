@@ -1,5 +1,6 @@
 from client_manager import ClientManager
 from appointment_manager import AppointmentManager
+from employee_manager import EmployeeManager
 
 import os
 import smtplib
@@ -46,14 +47,11 @@ def export_all_appointments_to_xlsx(
     return filepath
 
 
-def send_reminders_to_clients_at_date(
-    appointment_manager,
-    client_manager,
-    date,
-    email="dr.georgepapadopoulos@gmail.com",
-    pass_code="sphgkfocygdxfneu",
-):
-    smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
+def send_reminders_to_clients_at_date(appointment_manager, client_manager, date, user):
+    email = user[3]
+    pass_code = user[4]
+    smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+
     smtp_server.starttls()
     # smtp_server.login('dr.georgepapadopoulos@gmail.com', 'sphgkfocygdxfneu')
     smtp_server.login(email, pass_code)
@@ -79,3 +77,17 @@ def send_reminders_to_clients_at_date(
         # smtp_server.sendmail(email, client[3], message.as_string())
 
     smtp_server.quit()
+
+
+def get_stats_in_date_range(client_manager: ClientManager, appointment_manager: AppointmentManager, employee_manager: EmployeeManager ,start: datetime, end: datetime):
+    all_employees = employee_manager.get_all_employees()
+    # [(id, name, email, pass_code)]
+    stats = {}
+    for employee_id, employee_name, employee_email, employee_pass_code in all_employees:
+        query = "SELECT COUNT(*) FROM appointments WHERE employee_id = ? AND date BETWEEN ? AND ?;"
+        params = (employee_id, start, end)
+        appointment_manager.cursor.execute(query, params)
+        amount = appointment_manager.cursor.fetchone()[0]
+        stats[employee_id] = {"name": employee_name, "amount": amount}
+    return stats
+
