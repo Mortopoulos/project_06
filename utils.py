@@ -50,7 +50,7 @@ def export_all_appointments_to_xlsx(
 def send_reminders_to_clients_at_date(appointment_manager, client_manager, date, user):
     email = user[3]
     pass_code = user[4]
-    smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
 
     smtp_server.starttls()
     # smtp_server.login('dr.georgepapadopoulos@gmail.com', 'sphgkfocygdxfneu')
@@ -79,7 +79,13 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     smtp_server.quit()
 
 
-def get_stats_in_date_range(client_manager: ClientManager, appointment_manager: AppointmentManager, employee_manager: EmployeeManager ,start: datetime, end: datetime):
+def get_stats_in_date_range(
+    client_manager: ClientManager,
+    appointment_manager: AppointmentManager,
+    employee_manager: EmployeeManager,
+    start: datetime,
+    end: datetime,
+):
     all_employees = employee_manager.get_all_employees()
     # [(id, name, email, pass_code)]
     stats = {}
@@ -90,4 +96,3 @@ def get_stats_in_date_range(client_manager: ClientManager, appointment_manager: 
         amount = appointment_manager.cursor.fetchone()[0]
         stats[employee_id] = {"name": employee_name, "amount": amount}
     return stats
-
