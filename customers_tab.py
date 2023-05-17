@@ -47,7 +47,7 @@ class Customers:
         self.buttons_frame = ttk.Frame(self.customer_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη")
+        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_client)
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
         self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία")
@@ -82,3 +82,40 @@ class Customers:
 
         self.search_button = ttk.Button(self.search_frame, text="Αναζήτηση")
         self.search_button.pack(side="right", padx=5, pady=5)
+
+        self.populate_listbox()
+
+    # methods για τα κουμπια
+    def populate_listbox(self):
+        # Clear the current listbox content
+        self.listbox.delete(0, "end")
+
+        # Fetch clients from the database
+        clients = self.client_manager.get_all_clients()
+
+        # Populate the listbox with client data
+        for client in clients:
+            client_id, first_name, last_name, phone, email = client
+            self.listbox.insert(
+                "end", f"{client_id} {first_name} {last_name} {phone} {email}"
+            )
+    def add_client(self):
+        first_name = self.name_entry.get()
+        last_name = self.surname_entry.get()
+        phone = self.phone_entry.get()
+        email = self.email_entry.get()
+        self.client_manager.add_client(first_name, last_name, phone, email)
+        self.name_entry.delete(0, tk.END)
+        self.surname_entry.delete(0, tk.END)
+        self.phone_entry.delete(0, tk.END)
+        self.email_entry.delete(0, tk.END)
+        self.populate_listbox()
+
+    def update_client(self):
+        pass
+
+    def delete_client(self):
+        pass
+
+    def search_client(self):
+        pass
