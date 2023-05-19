@@ -26,7 +26,7 @@ class ClientManager:
         self.cursor.execute("DELETE FROM clients WHERE id=?", (id,))
         self.conn.commit()
 
-    def search_client(self, search_term):
+    def search_clients(self, search_term):
         self.cursor.execute(
             "SELECT * FROM clients WHERE first_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR email LIKE ?",
             (
