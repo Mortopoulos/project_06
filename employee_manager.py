@@ -9,7 +9,7 @@ class EmployeeManager:
         
         # Create the 'employees' table if it doesn't exist
         self.cursor.execute(
-            'CREATE TABLE IF NOT EXISTS employees (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT, pass_code TEXT)'
+            "CREATE TABLE IF NOT EXISTS employees (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT, pass_code TEXT)"
         )
         
         # Commit the changes to the database
@@ -18,8 +18,8 @@ class EmployeeManager:
     def add_employee(self, name, phone, email, pass_code):
         # Insert a new employee into the 'employees' table
         self.cursor.execute(
-            'INSERT INTO employees (name, phone, email, pass_code) VALUES (?, ?, ?, ?)',
-            (name, phone, email, pass_code)
+            "INSERT INTO employees (name, phone, email, pass_code) VALUES (?, ?, ?, ?)",
+            (name, phone, email, pass_code),
         )
         
         # Commit the changes to the database
@@ -74,7 +74,7 @@ class EmployeeManager:
         
         # Return the fetched employee
         return self.cursor.fetchone()
-    
+
     def __del__(self):
         # Close the database connection when the object is deleted
         self.conn.close()

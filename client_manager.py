@@ -26,26 +26,36 @@ class ClientManager:
         self.cursor.execute("DELETE FROM clients WHERE id=?", (id,))
         self.conn.commit()
 
-    def search_client(self, search_term):
+    def search_clients(self, search_term):
         self.cursor.execute(
             "SELECT * FROM clients WHERE first_name LIKE ? OR last_name LIKE ? OR phone LIKE ? OR email LIKE ?",
-            (f"%{search_term}%", f"%{search_term}%", f"%{search_term}%", f"%{search_term }%"),
+            (
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term }%",
+            ),
         )
         return self.cursor.fetchall()
 
-    def update_client(self, id, first_name=None, last_name=None, phone=None, email=None):
+    def update_client(
+        self, id, first_name=None, last_name=None, phone=None, email=None
+    ):
         updates = {}
         if first_name:
-            updates['first_name'] = first_name
+            updates["first_name"] = first_name
         if last_name:
-            updates['last_name'] = last_name
+            updates["last_name"] = last_name
         if phone:
-            updates['phone'] = phone
+            updates["phone"] = phone
         if email:
-            updates['email'] = email
+            updates["email"] = email
         update_query = ", ".join([f"{key}=?" for key in updates.keys()])
         update_values = tuple(updates.values()) + (id,)
-        self.cursor.execute(f"UPDATE clients SET {update_query} WHERE id=?", update_values)
+        self.cursor.execute(
+            f"UPDATE clients SET {update_query} WHERE id=?", update_values
+        )
+
         self.conn.commit()
 
     def get_all_clients(self):

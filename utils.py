@@ -66,6 +66,7 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     email = employee[3]
     pass_code = employee[4]
 
+
     # Create an SMTP server object and connect to the Gmail SMTP server
     smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
     smtp_server.starttls()
@@ -106,7 +107,15 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     smtp_server.quit()
 
 
-def get_stats_in_date_range(appointment_manager: AppointmentManager, employee_manager: EmployeeManager, start: datetime, end: datetime):
+
+    
+def get_stats_in_date_range(
+    client_manager: ClientManager,
+    appointment_manager: AppointmentManager,
+    employee_manager: EmployeeManager,
+    start: datetime,
+    end: datetime,
+):
     # Retrieve all employees
     all_employees = employee_manager.get_all_employees()
     # List of tuples: [(id, name, email, pass_code)]

@@ -10,7 +10,7 @@ class AppointmentManager:
         
         # Create the 'appointments' table if it doesn't exist
         self.cursor.execute(
-            'CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date DATETIME, duration INTEGER, client_id INTEGER, employee_id INTEGER)'
+            "CREATE TABLE IF NOT EXISTS appointments (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, date DATETIME, duration INTEGER, client_id INTEGER, employee_id INTEGER)"
         )
         
         # Commit the changes to the database
@@ -23,9 +23,10 @@ class AppointmentManager:
             raise ValueError(f"We have overlapping appointments: {overlapping_appointments}")
             
         # Insert the new appointment into the 'appointments' table
+
         self.cursor.execute(
-            'INSERT INTO appointments (name, date, duration, client_id, employee_id) VALUES (?, ?, ?, ?, ?)',
-            (name, date, duration, client_id, employee_id)
+            "INSERT INTO appointments (name, date, duration, client_id, employee_id) VALUES (?, ?, ?, ?, ?)",
+            (name, date, duration, client_id, employee_id),
         )
         
         # Commit the changes to the database
@@ -59,9 +60,10 @@ class AppointmentManager:
             raise ValueError(f"We have overlapping appointments: {overlapping_appointments}")
         
         # Update an appointment in the 'appointments' table based on the appointment ID
+
         self.cursor.execute(
-            'UPDATE appointments SET name=?, date=?, duration=?, client_id=?, employee_id=? WHERE id=?',
-            (name, date, duration, client_id, employee_id, appointment_id)
+            "UPDATE appointments SET name=?, date=?, duration=?, client_id=?, employee_id=? WHERE id=?",
+            (name, date, duration, client_id, employee_id, appointment_id),
         )
         
         # Commit the changes to the database
@@ -76,6 +78,24 @@ class AppointmentManager:
         # Return the fetched appointments
         return self.cursor.fetchall()
 
+    def get_appointments_for_client(self, client_id):
+        self.cursor.execute(
+            "SELECT * FROM appointments WHERE client_id=?", (client_id,)
+        )
+        return self.cursor.fetchall()
+
+    def get_appointments_for_client_on_date(self, client_id, date):
+        self.cursor.execute(
+            "SELECT * FROM appointments WHERE client_id=? AND DATE(date)=DATE(?)",
+            (client_id, date),
+        )
+        return self.cursor.fetchall()
+
+    def get_appointments_for_employee(self, employee_id):
+        self.cursor.execute(
+            "SELECT * FROM appointments WHERE employee_id=?", (employee_id,)
+        )
+        return self.cursor.fetchall()
 
     def __del__(self):
         self.conn.close()
@@ -97,6 +117,7 @@ class AppointmentManager:
             self.cursor.execute(
                 "SELECT * FROM appointments WHERE (date < ? AND (date > ? OR (datetime(date, '+' || duration || ' minutes') > ?)) AND employee_id = ? AND id != ?)",
                 (end_time, start_time, start_time, employee_id, exception_appointment_id)
+
             )
             
         # Fetch the overlapping appointments
@@ -104,4 +125,3 @@ class AppointmentManager:
         
         # Return the fetched overlapping appointments
         return overlapping_appointments
-
