@@ -1,12 +1,3 @@
-from ui import Ui
-from client_manager import ClientManager
-from appointment_manager import AppointmentManager
-from utils import *
-from datetime import datetime
+from ui_v2 import MainApplication
 
-DATABASE_FILE = "app.db"
-
-cli_manager = ClientManager(DATABASE_FILE)
-appointment_manager = AppointmentManager(DATABASE_FILE)
-
-app = Ui(cli_manager)
+MainApplication()
