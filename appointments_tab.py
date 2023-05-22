@@ -181,7 +181,7 @@ class Appointments:
         client_id = self.client_manager.get_id_from_phone(phone)[0]
         employee_id = self.employee_manager.get_id_from_name(emp_name)
         print(fields[2])
-        self.appointment_manager.add_appointment(fields[0].strip(), datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M:%S"), int(fields[4]), client_id, employee_id)
+        self.appointment_manager.add_appointment(fields[0].strip(), datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"), int(fields[4]), client_id, employee_id)
 
         self.clear_fields()
         self.populate_listbox()
