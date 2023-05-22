@@ -51,16 +51,24 @@ class Customers:
         self.buttons_frame = ttk.Frame(self.customer_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_client)
+        self.add_button = ttk.Button(
+            self.buttons_frame, text="Προσθήκη", command=self.add_client
+        )
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία", command=self.edit_client)
+        self.edit_button = ttk.Button(
+            self.buttons_frame, text="Επεξεργασία", command=self.edit_client
+        )
         self.edit_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.update_button = ttk.Button(self.buttons_frame, text="Ανανέωση", command=self.update_client)
+        self.update_button = ttk.Button(
+            self.buttons_frame, text="Ανανέωση", command=self.update_client
+        )
         self.update_button.grid(row=1, column=1, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή", command=self.delete_client)
+        self.delete_button = ttk.Button(
+            self.buttons_frame, text="Διαγραφή", command=self.delete_client
+        )
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
 
         self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή")
@@ -142,7 +150,9 @@ class Customers:
         last_name = self.surname_entry.get()
         phone = self.phone_entry.get()
         email = self.email_entry.get()
-        self.client_manager.update_client(self.curselection, first_name, last_name, phone, email)
+        self.client_manager.update_client(
+            self.curselection, first_name, last_name, phone, email
+        )
         self.clear_fields()
         self.populate_listbox()
 

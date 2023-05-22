@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
 from appointment_manager import AppointmentManager
+from tkinter import StringVar
 
 DATABASE_FILE = "app.db"
 
@@ -10,6 +11,9 @@ class Appointments:
     def __init__(self, tab):
         self.appointment_manager = AppointmentManager(DATABASE_FILE)
         self.tab = tab
+        self.curselection = 0
+        self.search_terms = StringVar()
+        self.search_terms.trace("w", lambda *args: self.search_appointments())
         self.tab.grid_rowconfigure(0, weight=1)
         self.tab.grid_columnconfigure(0, weight=1)
         self.tab.grid_columnconfigure(1, weight=2)
@@ -130,3 +134,30 @@ class Appointments:
             self.client_search_frame, text="Αναζήτηση"
         )
         self.client_search_button.pack(side="left", padx=5, pady=5)
+
+        self.populate_listbox()
+
+    def get_fields(self):
+        return [
+            self.phone_entry,
+            self.date_entry,
+            self.duration_entry,
+            self.employee_combobox,
+        ]
+
+    def populate_listbox(self, appointments=None):
+        self.listbox.delete(0, "end")
+
+        if not appointments:
+            appointments = self.appointment_manager.get_all_appointments()
+
+        for a in appointments:
+            id, name, date, duration, client_id, employee_id = a
+            self.listbox.insert(
+                f"{id} {name} {date} {duration} {client_id} {employee_id}"
+            )
+
+    def add_appointment(self):
+        fields = self.get_fields()
+        # do shit with fields
+        pass
