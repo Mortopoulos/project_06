@@ -55,6 +55,7 @@ class ClientManager:
         self.cursor.execute(
             f"UPDATE clients SET {update_query} WHERE id=?", update_values
         )
+
         self.conn.commit()
 
     def get_all_clients(self):
