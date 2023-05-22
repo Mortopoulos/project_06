@@ -1,4 +1,6 @@
 import sqlite3
+import re
+from tkinter import messagebox
 
 
 class ClientManager:
@@ -15,7 +17,30 @@ class ClientManager:
         )
         self.conn.commit()
 
+    def is_valid_email(self, email):
+        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+        return re.fullmatch(email_regex, email) is not None
+
+    def is_valid_phone(self, phone):
+        phone_regex = r'^\d{10}$'
+        return re.fullmatch(phone_regex, phone) is not None
+
+    def client_exists(self, phone, email):
+        self.cursor.execute(
+            "SELECT * FROM clients WHERE phone = ? OR email = ?",
+            (phone, email),
+        )
+        return self.cursor.fetchone() is not None
+
     def add_client(self, first_name, last_name, phone, email):
+        if not self.is_valid_email(email) or not self.is_valid_phone(phone):
+            messagebox.showerror("Μη έγκυρο email ή αριθμός τηλεφώνου", "Παρακαλώ εισάγετε έγκυρα στοιχεία.")
+            return
+
+        if self.client_exists(phone, email):
+            messagebox.showerror("Ο πελάτης υπάρχει ήδη", "Παρακαλώ δοκιμάστε ξανά.")
+            return
+
         self.cursor.execute(
             "INSERT INTO clients (first_name, last_name, phone, email) VALUES (?, ?, ?, ?)",
             (first_name, last_name, phone, email),
@@ -55,7 +80,6 @@ class ClientManager:
         self.cursor.execute(
             f"UPDATE clients SET {update_query} WHERE id=?", update_values
         )
-
         self.conn.commit()
 
     def get_all_clients(self):

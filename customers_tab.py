@@ -132,8 +132,9 @@ class Customers:
         last_name = self.surname_entry.get()
         phone = self.phone_entry.get()
         email = self.email_entry.get()
-        self.client_manager.add_client(first_name, last_name, phone, email)
-        self.clear_fields()
+        success = self.client_manager.add_client(first_name, last_name, phone, email)
+        if success:
+            self.clear_fields()
         self.populate_listbox()
 
     def edit_client(self):
