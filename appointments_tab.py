@@ -2,7 +2,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkcalendar import DateEntry
 from appointment_manager import AppointmentManager
+from employee_manager import EmployeeManager
+from client_manager import ClientManager
 from tkinter import StringVar
+from datetime import datetime
 
 DATABASE_FILE = "app.db"
 
@@ -10,6 +13,8 @@ DATABASE_FILE = "app.db"
 class Appointments:
     def __init__(self, tab):
         self.appointment_manager = AppointmentManager(DATABASE_FILE)
+        self.employee_manager = EmployeeManager(DATABASE_FILE)
+        self.client_manager = ClientManager(DATABASE_FILE)
         self.tab = tab
         self.curselection = 0
         self.search_terms = StringVar()
@@ -69,7 +74,7 @@ class Appointments:
         self.buttons_frame = ttk.Frame(self.appointment_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη")
+        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_appointment)
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
         self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία")
@@ -137,12 +142,22 @@ class Appointments:
 
         self.populate_listbox()
 
+    def clear_fields(self):
+        self.comments_text.delete("1.0", "end")
+        self.phone_entry.delete(0, "end")
+        self.date_entry.delete(0, "end")
+        self.time_combo.delete(0, "end")
+        self.duration_entry.delete(0, "end")
+        self.employee_combo.delete(0, "end")
+
     def get_fields(self):
         return [
-            self.phone_entry,
-            self.date_entry,
-            self.duration_entry,
-            self.employee_combobox,
+            self.comments_text.get("1.0", "end"),
+            self.phone_entry.get(),
+            self.date_entry.get(),
+            self.time_combo.get(),
+            self.duration_entry.get(),
+            self.employee_combobox.get(),
         ]
 
     def populate_listbox(self, appointments=None):
@@ -150,14 +165,23 @@ class Appointments:
 
         if not appointments:
             appointments = self.appointment_manager.get_all_appointments()
+            print(appointments)
 
         for a in appointments:
             id, name, date, duration, client_id, employee_id = a
-            self.listbox.insert(
+            self.listbox.insert("end", 
                 f"{id} {name} {date} {duration} {client_id} {employee_id}"
             )
 
     def add_appointment(self):
         fields = self.get_fields()
-        # do shit with fields
-        pass
+        print(fields)
+        emp_name = fields[5]
+        phone = fields[1]
+        client_id = self.client_manager.get_id_from_phone(phone)[0]
+        employee_id = self.employee_manager.get_id_from_name(emp_name)
+        print(fields[2])
+        self.appointment_manager.add_appointment(fields[0].strip(), datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M:%S"), int(fields[4]), client_id, employee_id)
+
+        self.clear_fields()
+        self.populate_listbox()

@@ -97,5 +97,9 @@ class ClientManager:
         all_clients = self.get_all_clients()
         return [client for client in all_clients if client[0] == client_id][0]
 
+    def get_id_from_phone(self, phone):
+        self.cursor.execute(f"SELECT id FROM clients WHERE phone LIKE '{phone}'")
+        return self.cursor.fetchall()[0]
+
     def __del__(self):
         self.conn.close()
