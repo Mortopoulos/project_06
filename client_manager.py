@@ -18,11 +18,11 @@ class ClientManager:
         self.conn.commit()
 
     def is_valid_email(self, email):
-        email_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b'
+        email_regex = r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b"
         return re.fullmatch(email_regex, email) is not None
 
     def is_valid_phone(self, phone):
-        phone_regex = r'^\d{10}$'
+        phone_regex = r"^\d{10}$"
         return re.fullmatch(phone_regex, phone) is not None
 
     def client_exists(self, phone, email):
@@ -34,7 +34,10 @@ class ClientManager:
 
     def add_client(self, first_name, last_name, phone, email):
         if not self.is_valid_email(email) or not self.is_valid_phone(phone):
-            messagebox.showerror("Μη έγκυρο email ή αριθμός τηλεφώνου", "Παρακαλώ εισάγετε έγκυρα στοιχεία.")
+            messagebox.showerror(
+                "Μη έγκυρο email ή αριθμός τηλεφώνου",
+                "Παρακαλώ εισάγετε έγκυρα στοιχεία.",
+            )
             return
 
         if self.client_exists(phone, email):
@@ -58,7 +61,7 @@ class ClientManager:
                 f"%{search_term}%",
                 f"%{search_term}%",
                 f"%{search_term}%",
-                f"%{search_term }%",
+                f"%{search_term}%",
             ),
         )
         return self.cursor.fetchall()

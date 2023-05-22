@@ -12,17 +12,19 @@ from openpyxl.styles import Font
 from openpyxl.styles.colors import Color
 from openpyxl.styles.fills import PatternFill
 from openpyxl.utils import get_column_letter
+
 # Add all of the necessary imports
 
 
-def export_all_appointments_to_xlsx(appointment_manager, client_manager, destination_folder_path):
+def export_all_appointments_to_xlsx(
+    appointment_manager, client_manager, destination_folder_path
+):
     # Create a new workbook and select the active sheet
     wb = Workbook()
     sheet = wb.active
 
     # Define the column headings for the spreadsheet
-    headings = ["ID", "Client", "Email", "Phone",
-                "Name", "Date", "Time (Minutes)"]
+    headings = ["ID", "Client", "Email", "Phone", "Name", "Date", "Time (Minutes)"]
 
     # Write the column headings to the first row of the sheet
     for col_num, heading in enumerate(headings, 1):
@@ -30,8 +32,7 @@ def export_all_appointments_to_xlsx(appointment_manager, client_manager, destina
         cell = sheet[f"{col_letter}1"]
         cell.value = heading
         cell.font = Font(bold=True)
-        cell.fill = PatternFill(patternType="solid",
-                                fgColor=Color(rgb="C6EFCE"))
+        cell.fill = PatternFill(patternType="solid", fgColor=Color(rgb="C6EFCE"))
 
     # Retrieve all appointments from the appointment manager
     appointments = appointment_manager.get_all_appointments()
@@ -61,14 +62,15 @@ def export_all_appointments_to_xlsx(appointment_manager, client_manager, destina
     return filepath
 
 
-def send_reminders_to_clients_at_date(appointment_manager, client_manager, date, employee):
+def send_reminders_to_clients_at_date(
+    appointment_manager, client_manager, date, employee
+):
     # Retrieve the email and pass code of the employee
     email = employee[3]
     pass_code = employee[4]
 
-
     # Create an SMTP server object and connect to the Gmail SMTP server
-    smtp_server = smtplib.SMTP('smtp.gmail.com', 587)
+    smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
     smtp_server.starttls()
 
     # Login to the SMTP server using the employee's email and pass code
@@ -77,11 +79,11 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     # Iterate over appointments on the specified date
     for appointment in appointment_manager.get_appointments_on_date(date):
         # Retrieve appointment information
-        appointment_date = datetime.strptime(
-            appointment[2], "%Y-%m-%d %H:%M:%S")
+        appointment_date = datetime.strptime(appointment[2], "%Y-%m-%d %H:%M:%S")
 
         # Set the locale to Greek for date formatting
         import locale
+
         locale.setlocale(locale.LC_TIME, "el_GR")
 
         # Format the appointment date and time
@@ -107,8 +109,6 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date,
     smtp_server.quit()
 
 
-
-    
 def get_stats_in_date_range(
     client_manager: ClientManager,
     appointment_manager: AppointmentManager,
