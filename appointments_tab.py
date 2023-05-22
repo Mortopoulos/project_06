@@ -148,7 +148,7 @@ class Appointments:
         self.date_entry.delete(0, "end")
         self.time_combo.delete(0, "end")
         self.duration_entry.delete(0, "end")
-        self.employee_combo.delete(0, "end")
+        self.employee_combobox.delete(0, "end")
 
     def get_fields(self):
         return [
