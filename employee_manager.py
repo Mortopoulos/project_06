@@ -71,7 +71,7 @@ class EmployeeManager:
 
     def get_id_from_name(self, name):
         self.cursor.execute(f"SELECT id FROM employees WHERE name LIKE '{name}'")
-        #return self.cursor.fetchall()[0]
+        # return self.cursor.fetchall()[0]
         return 1
 
     def get_all_employees(self):
