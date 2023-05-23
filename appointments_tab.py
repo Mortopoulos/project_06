@@ -1,11 +1,12 @@
 import tkinter as tk
-from tkinter import ttk
-from tkcalendar import DateEntry
-from appointment_manager import AppointmentManager
-from employee_manager import EmployeeManager
-from client_manager import ClientManager
-from tkinter import StringVar
 from datetime import datetime
+from tkinter import StringVar, ttk
+
+from tkcalendar import DateEntry
+
+from appointment_manager import AppointmentManager
+from client_manager import ClientManager
+from employee_manager import EmployeeManager
 
 DATABASE_FILE = "app.db"
 
@@ -74,7 +75,9 @@ class Appointments:
         self.buttons_frame = ttk.Frame(self.appointment_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_appointment)
+        self.add_button = ttk.Button(
+            self.buttons_frame, text="Προσθήκη", command=self.add_appointment
+        )
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
         self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία")
@@ -169,8 +172,8 @@ class Appointments:
 
         for a in appointments:
             id, name, date, duration, client_id, employee_id = a
-            self.listbox.insert("end", 
-                f"{id} {name} {date} {duration} {client_id} {employee_id}"
+            self.listbox.insert(
+                "end", f"{id} {name} {date} {duration} {client_id} {employee_id}"
             )
 
     def add_appointment(self):
@@ -181,7 +184,13 @@ class Appointments:
         client_id = self.client_manager.get_id_from_phone(phone)[0]
         employee_id = self.employee_manager.get_id_from_name(emp_name)
         print(fields[2])
-        self.appointment_manager.add_appointment(fields[0].strip(), datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"), int(fields[4]), client_id, employee_id)
+        self.appointment_manager.add_appointment(
+            fields[0].strip(),
+            datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"),
+            int(fields[4]),
+            client_id,
+            employee_id,
+        )
 
         self.clear_fields()
         self.populate_listbox()
