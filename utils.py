@@ -61,6 +61,38 @@ def export_all_appointments_to_xlsx(
     # Return the filepath of the exported spreadsheet
     return filepath
 
+def export_all_clients_to_xlsx(client_manager: ClientManager, destination_folder_path: str):
+    wb = Workbook()
+    sheet = wb.active
+    headings = ["ID", "First Name", "Last Name", "Phone", "Email"]
+
+    # Write the column headings to the first row of the sheet
+    for col_num, heading in enumerate(headings, 1):
+        col_letter = get_column_letter(col_num)
+        cell = sheet[f"{col_letter}1"]
+        cell.value = heading
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(patternType="solid",
+                                fgColor=Color(rgb="C6EFCE"))
+
+    # Retrieve all clients from the client manager
+    clients = client_manager.get_all_clients()
+
+    # Iterate over the clients and populate the spreadsheet
+    for row_num, client in enumerate(clients, 2):
+        # Write the client information to the corresponding cells in the sheet
+        sheet[f"A{row_num}"] = client[0]
+        sheet[f"B{row_num}"] = client[1]
+        sheet[f"C{row_num}"] = client[2]
+        sheet[f"D{row_num}"] = client[3]
+        sheet[f"E{row_num}"] = client[4]
+
+    # Set the filename and filepath for the exported spreadsheet
+    filename = "clients.xlsx"
+    filepath = os.path.join(destination_folder_path, filename)
+    wb.save(filepath)
+    return filepath
+
 
 def send_reminders_to_clients_at_date(
     appointment_manager, client_manager, date, employee
@@ -110,7 +142,6 @@ def send_reminders_to_clients_at_date(
 
 
 def get_stats_in_date_range(
-    client_manager: ClientManager,
     appointment_manager: AppointmentManager,
     employee_manager: EmployeeManager,
     start: datetime,
@@ -140,3 +171,31 @@ def get_stats_in_date_range(
 
     # Return the statistics list
     return stats
+
+def print_appointments_on_date(appointment_manager: AppointmentManager, date: datetime):
+    # Get all appointments on the specified date
+    appointments = appointment_manager.get_appointments_on_date(date)
+
+    # Initialize the printer
+    printer = None
+    try:
+        # Get the default printer
+        printer = os.environ["PRINTER"]
+
+        # Open the printer
+        printer = open(printer, "w")
+
+        # Print the header
+        printer.write("Appointments on {}:\n".format(date))
+
+        # Print each appointment
+        for appointment in appointments:
+            printer.write("Name: {}\nDate: {}\nTime: {}\nDuration: {} minutes\nClient: {}\nEmployee: {}\n\n".format(
+                appointment["name"], appointment["date"], appointment["time"], appointment[
+                    "duration"], appointment["client_id"], appointment["employee_id"]
+            ))
+
+    finally:
+        # Close the printer
+        if printer is not None:
+            printer.close()
