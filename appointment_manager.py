@@ -59,7 +59,7 @@ class AppointmentManager:
         # Return the fetched appointment
         return self.cursor.fetchone()
 
-    def edit_appointment(
+    def update_appointment(
         self, appointment_id, name, date, duration, client_id, employee_id
     ):
         # Check for overlapping appointments
@@ -80,6 +80,20 @@ class AppointmentManager:
 
         # Commit the changes to the database
         self.conn.commit()
+
+    def search_appointments(self, search_term):
+        self.cursor.execute(
+            "SELECT * FROM appointments WHERE id LIKE ? OR name LIKE ? OR date LIKE ? OR duration LIKE ? OR client_id LIKE ? OR employee_id LIKE ?",
+            (
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term}%",
+                f"%{search_term}%",
+            ),
+        )
+        return self.cursor.fetchall()
 
     def get_appointments_on_date(self, date):
         # Retrieve appointments from the 'appointments' table for a specific date

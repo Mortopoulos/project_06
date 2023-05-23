@@ -61,7 +61,10 @@ def export_all_appointments_to_xlsx(
     # Return the filepath of the exported spreadsheet
     return filepath
 
-def export_all_clients_to_xlsx(client_manager: ClientManager, destination_folder_path: str):
+
+def export_all_clients_to_xlsx(
+    client_manager: ClientManager, destination_folder_path: str
+):
     wb = Workbook()
     sheet = wb.active
     headings = ["ID", "First Name", "Last Name", "Phone", "Email"]
@@ -72,8 +75,7 @@ def export_all_clients_to_xlsx(client_manager: ClientManager, destination_folder
         cell = sheet[f"{col_letter}1"]
         cell.value = heading
         cell.font = Font(bold=True)
-        cell.fill = PatternFill(patternType="solid",
-                                fgColor=Color(rgb="C6EFCE"))
+        cell.fill = PatternFill(patternType="solid", fgColor=Color(rgb="C6EFCE"))
 
     # Retrieve all clients from the client manager
     clients = client_manager.get_all_clients()
@@ -172,6 +174,7 @@ def get_stats_in_date_range(
     # Return the statistics list
     return stats
 
+
 def print_appointments_on_date(appointment_manager: AppointmentManager, date: datetime):
     # Get all appointments on the specified date
     appointments = appointment_manager.get_appointments_on_date(date)
@@ -190,10 +193,16 @@ def print_appointments_on_date(appointment_manager: AppointmentManager, date: da
 
         # Print each appointment
         for appointment in appointments:
-            printer.write("Name: {}\nDate: {}\nTime: {}\nDuration: {} minutes\nClient: {}\nEmployee: {}\n\n".format(
-                appointment["name"], appointment["date"], appointment["time"], appointment[
-                    "duration"], appointment["client_id"], appointment["employee_id"]
-            ))
+            printer.write(
+                "Name: {}\nDate: {}\nTime: {}\nDuration: {} minutes\nClient: {}\nEmployee: {}\n\n".format(
+                    appointment["name"],
+                    appointment["date"],
+                    appointment["time"],
+                    appointment["duration"],
+                    appointment["client_id"],
+                    appointment["employee_id"],
+                )
+            )
 
     finally:
         # Close the printer

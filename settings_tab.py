@@ -135,7 +135,7 @@ class Settings:
         email = self.email_entry.get()
         passcode = self.passcode_entry.get()
 
-        fullname = name+" "+surname
+        fullname = name + " " + surname
 
         if fullname and email and passcode:  # Αν τα πεδία δεν είναι κενά
             print(fullname, email, passcode)

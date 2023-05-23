@@ -170,7 +170,6 @@ class Customers:
 
     def search_client(self):
         search_term = self.search_terms.get()
-        self.name_entry.insert(0, search_term)
         clients = self.client_manager.search_clients(search_term)
         self.clear_fields()
         self.populate_listbox(clients)
