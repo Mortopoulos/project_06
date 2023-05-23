@@ -69,10 +69,10 @@ class EmployeeManager:
         # Commit the changes to the database
         self.conn.commit()
 
+
     def get_id_from_name(self, name):
         self.cursor.execute(f"SELECT id FROM employees WHERE name LIKE '{name}'")
-        # return self.cursor.fetchall()[0]
-        return 1
+        return self.cursor.fetchall()[0]
 
     def get_all_employees(self):
         # Retrieve all employees from the 'employees' table
