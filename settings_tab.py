@@ -57,10 +57,10 @@ class Settings:
 
         # Λίστα υπαλλήλων
         self.employees_list = ttk.Treeview(
-            self.list_frame, columns=("name", "surname"), show="headings"
+            self.list_frame, columns=("name", "email"), show="headings"
         )
-        self.employees_list.heading("name", text="Όνομα")
-        self.employees_list.heading("surname", text="Επώνυμο")
+        self.employees_list.heading("name", text="Όνοματεπώνυμο")
+        self.employees_list.heading("email", text="Email")
         self.employees_list.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
         # Δημιουργία των widgets για την προσθήκη και διαγραφή υπαλλήλων
@@ -79,6 +79,18 @@ class Settings:
         self.surname_entry = ttk.Entry(self.buttons_frame)
         self.surname_entry.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
 
+        self.email_label = ttk.Label(self.buttons_frame, text="Email    :")
+        self.email_label.grid(row=2, column=0)
+
+        self.email_entry = ttk.Entry(self.buttons_frame)
+        self.email_entry.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
+
+        self.passcode_label = ttk.Label(self.buttons_frame, text="Pass    :")
+        self.passcode_label.grid(row=3, column=0)
+
+        self.passcode_entry = ttk.Entry(self.buttons_frame)
+        self.passcode_entry.grid(row=3, column=1, sticky="ew", padx=5, pady=5)
+
         self.add_button = ttk.Button(
             self.buttons_frame, text="Προσθήκη", command=self.add_employee
         )
@@ -93,24 +105,51 @@ class Settings:
         self.add_button.config(command=self.add_employee)
         self.delete_button.config(command=self.delete_employee)
 
+        self.populate_listbox()
+
     def open_report(self):
         webbrowser.open("SchedulEasy.pdf")
+
+    def clear_employee_list(self):
+        for item in self.employees_list.get_children():
+            self.employees_list.delete(item)
+
+    def populate_listbox(self, employees=None):
+        # Clear the current listbox content
+        self.clear_employee_list()
+
+        # Fetch clients from the database
+        if not employees:
+            employees = self.employee_manager.get_all_employees()
+
+        # Populate the listbox with client data
+        for emp in employees:
+            emp_id, name, email, passcode = emp
+            self.employees_list.insert(
+                "", "end", values=(name, email)
+            )  # Προσθήκη στη λίστα
 
     def add_employee(self):
         name = self.name_entry.get()
         surname = self.surname_entry.get()
+        email = self.email_entry.get()
+        passcode = self.passcode_entry.get()
 
-        if name and surname:  # Αν τα πεδία δεν είναι κενά
-            self.employees_list.insert(
-                "", "end", values=(name, surname)
-            )  # Προσθήκη στη λίστα
-            self.name_entry.delete(0, "end")  # Καθαρισμός των πεδίων
-            self.surname_entry.delete(0, "end")
+        fullname = name+" "+surname
+
+        if fullname and email and passcode:  # Αν τα πεδία δεν είναι κενά
+            print(fullname, email, passcode)
+            self.employee_manager.add_employee(fullname, email, passcode)
+
+        self.name_entry.delete(0, "end")  # Καθαρισμός των πεδίων
+        self.surname_entry.delete(0, "end")
+        self.email_entry.delete(0, "end")
+        self.passcode_entry.delete(0, "end")
+
+        self.populate_listbox()
 
     def delete_employee(self):
-        selected_items = self.employees_list.selection()  # Λήψη επιλεγμένων στοιχείων
-        for item in selected_items:
-            self.employees_list.delete(item)  # Διαγραφή από τη λίστα
+        pass
 
     def update_plot(self):
         # Εδώ πρέπει να ενημερώσετε τα δεδομένα του διαγράμματος σύμφωνα με τη βάση δεδομένων

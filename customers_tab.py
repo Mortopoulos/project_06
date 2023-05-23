@@ -100,8 +100,8 @@ class Customers:
         self.search_entry = ttk.Entry(self.search_frame, textvariable=self.search_terms)
         self.search_entry.pack(side="left", fill="x", expand=True, padx=5, pady=5)
 
-        # self.search_button = ttk.Button(self.search_frame, text="Αναζήτηση")
-        # self.search_button.pack(side="right", padx=5, pady=5)
+        self.search_label = ttk.Label(self.search_frame, text="Αναζήτηση")
+        self.search_label.pack(side="right", fill="x", expand=True, padx=5, pady=5)
 
         self.populate_listbox()
 

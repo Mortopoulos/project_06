@@ -11,17 +11,17 @@ class EmployeeManager:
 
         # Create the 'employees' table if it doesn't exist
         self.cursor.execute(
-            "CREATE TABLE IF NOT EXISTS employees (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, phone TEXT, email TEXT, pass_code TEXT)"
+            "CREATE TABLE IF NOT EXISTS employees (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, pass_code TEXT)"
         )
 
         # Commit the changes to the database
         self.conn.commit()
 
-    def add_employee(self, name, phone, email, pass_code):
+    def add_employee(self, name, email, pass_code):
         # Insert a new employee into the 'employees' table
         self.cursor.execute(
-            "INSERT INTO employees (name, phone, email, pass_code) VALUES (?, ?, ?, ?)",
-            (name, phone, email, pass_code),
+            "INSERT INTO employees (name, email, pass_code) VALUES (?, ?, ?)",
+            (name, email, pass_code),
         )
 
         # Commit the changes to the database
@@ -37,9 +37,8 @@ class EmployeeManager:
     def search_employee(self, search_term):
         # Search for employees in the 'employees' table based on a search term
         self.cursor.execute(
-            "SELECT * FROM employees WHERE name LIKE ? OR phone LIKE ? OR email LIKE ? OR pass_code LIKE ?",
+            "SELECT * FROM employees WHERE name LIKE ? OR email LIKE ? OR pass_code LIKE ?",
             (
-                f"%{search_term}%",
                 f"%{search_term}%",
                 f"%{search_term}%",
                 f"%{search_term}%",
@@ -49,13 +48,11 @@ class EmployeeManager:
         # Return the fetched employees
         return self.cursor.fetchall()
 
-    def update_employee(self, name=None, phone=None, email=None, pass_code=None):
+    def update_employee(self, name=None, email=None, pass_code=None):
         # Update an employee's information in the 'employees' table
         updates = {}
         if name:
             updates["name"] = name
-        if phone:
-            updates["phone"] = phone
         if email:
             updates["email"] = email
         if pass_code:
@@ -68,7 +65,6 @@ class EmployeeManager:
 
         # Commit the changes to the database
         self.conn.commit()
-
 
     def get_id_from_name(self, name):
         self.cursor.execute(f"SELECT id FROM employees WHERE name LIKE '{name}'")
@@ -84,7 +80,7 @@ class EmployeeManager:
     def get_employee(self, employee_id):
         # Retrieve an employee from the 'employees' table based on the employee ID
         query = "SELECT * FROM employees WHERE id = ?"
-        self.cursor.execute(query, (employee_id))
+        self.cursor.execute(query, str(employee_id))
 
         # Return the fetched employee
         return self.cursor.fetchone()

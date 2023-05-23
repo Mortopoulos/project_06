@@ -66,6 +66,7 @@ class Appointments:
         self.employee_label = ttk.Label(self.info_frame, text="Υπάλληλος    :")
         self.employee_label.grid(row=4, column=0)
         self.employee_combobox = ttk.Combobox(self.info_frame)
+        self.employee_combobox["values"] = [emp[1] for emp in self.employee_manager.get_all_employees()]
         self.employee_combobox.grid(row=4, column=1, sticky="ew", padx=5, pady=5)
 
         self.comments_label = ttk.Label(self.info_frame, text="Σχόλια            :")
@@ -84,6 +85,11 @@ class Appointments:
 
         self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία")
         self.edit_button.grid(row=0, column=1, padx=5, pady=5)
+
+        self.update_button = ttk.Button(
+            self.buttons_frame, text="Ανανέωση", command=self.update_appointment
+        )
+        self.update_button.grid(row=1, column=1, padx=5, pady=5)
 
         self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή")
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
@@ -174,8 +180,10 @@ class Appointments:
 
         for a in appointments:
             id, name, date, duration, client_id, employee_id = a
+            client = self.client_manager.get_client(client_id)[1] + " " + self.client_manager.get_client(client_id)[2]
+            employee = self.employee_manager.get_employee(employee_id)[1]
             self.listbox.insert(
-                "end", f"{id} {name} {date} {duration} {client_id} {employee_id}"
+                    "end", f"{client} at: {date} for: {duration}mins {name} with: {employee}"
             )
 
     def add_appointment(self):
@@ -184,7 +192,7 @@ class Appointments:
         emp_name = fields[5]
         phone = fields[1]
         client_id = self.client_manager.get_id_from_phone(phone)[0]
-        employee_id = self.employee_manager.get_id_from_name(emp_name)
+        employee_id = self.employee_manager.get_id_from_name(emp_name)[0]
         print(fields[2])
         self.appointment_manager.add_appointment(
             fields[0].strip(),
@@ -196,3 +204,6 @@ class Appointments:
 
         self.clear_fields()
         self.populate_listbox()
+
+    def update_appointment(self):
+        pass
