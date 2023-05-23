@@ -8,6 +8,8 @@ from appointment_manager import AppointmentManager
 from client_manager import ClientManager
 from employee_manager import EmployeeManager
 
+from utils import export_all_appointments_to_xlsx
+
 DATABASE_FILE = "app.db"
 
 
@@ -86,7 +88,7 @@ class Appointments:
         self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή")
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή")
+        self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή", command=lambda: export_all_appointments_to_xlsx(self.appointment_manager, self.client_manager, "exports"))
         self.delete_button.grid(row=0, column=3, padx=5, pady=5)
 
         # Δημιουργία των widgets για τη λίστα ραντεβού

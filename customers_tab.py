@@ -1,7 +1,8 @@
-from client_manager import ClientManager
 import tkinter as tk
-from tkinter import StringVar
-from tkinter import ttk
+from tkinter import StringVar, ttk
+
+from client_manager import ClientManager
+from utils import export_all_clients_to_xlsx
 
 DATABASE_FILE = "app.db"
 
@@ -71,7 +72,11 @@ class Customers:
         )
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή")
+        self.delete_button = ttk.Button(
+            self.buttons_frame,
+            text="Εξαγωγή",
+            command=lambda: export_all_clients_to_xlsx(self.client_manager, "exports"),
+        )
         self.delete_button.grid(row=0, column=3, padx=5, pady=5)
 
         # Δημιουργία των widgets για τη λίστα πελατών
