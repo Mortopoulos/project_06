@@ -1,11 +1,14 @@
 import tkinter as tk
-from tkinter import ttk
-from tkcalendar import DateEntry
-from appointment_manager import AppointmentManager
-from employee_manager import EmployeeManager
-from client_manager import ClientManager
-from tkinter import StringVar
 from datetime import datetime
+from tkinter import StringVar, ttk
+
+from tkcalendar import DateEntry
+
+from appointment_manager import AppointmentManager
+from client_manager import ClientManager
+from employee_manager import EmployeeManager
+
+from utils import export_all_appointments_to_xlsx
 
 DATABASE_FILE = "app.db"
 
@@ -15,10 +18,10 @@ class Appointments:
         self.appointment_manager = AppointmentManager(DATABASE_FILE)
         self.employee_manager = EmployeeManager(DATABASE_FILE)
         self.client_manager = ClientManager(DATABASE_FILE)
-        self.tab = tab
         self.curselection = 0
         self.search_terms = StringVar()
         self.search_terms.trace("w", lambda *args: self.search_appointments())
+        self.tab = tab
         self.tab.grid_rowconfigure(0, weight=1)
         self.tab.grid_columnconfigure(0, weight=1)
         self.tab.grid_columnconfigure(1, weight=2)
@@ -63,6 +66,9 @@ class Appointments:
         self.employee_label = ttk.Label(self.info_frame, text="Υπάλληλος    :")
         self.employee_label.grid(row=4, column=0)
         self.employee_combobox = ttk.Combobox(self.info_frame)
+        self.employee_combobox["values"] = [
+            emp[1] for emp in self.employee_manager.get_all_employees()
+        ]
         self.employee_combobox.grid(row=4, column=1, sticky="ew", padx=5, pady=5)
 
         self.comments_label = ttk.Label(self.info_frame, text="Σχόλια            :")
@@ -74,16 +80,33 @@ class Appointments:
         self.buttons_frame = ttk.Frame(self.appointment_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_appointment)
+        self.add_button = ttk.Button(
+            self.buttons_frame, text="Προσθήκη", command=self.add_appointment
+        )
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία")
+        self.edit_button = ttk.Button(
+            self.buttons_frame, text="Επεξεργασία", command=self.edit_appointment
+        )
         self.edit_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή")
+        self.update_button = ttk.Button(
+            self.buttons_frame, text="Ανανέωση", command=self.update_appointment
+        )
+        self.update_button.grid(row=1, column=1, padx=5, pady=5)
+
+        self.delete_button = ttk.Button(
+            self.buttons_frame, text="Διαγραφή", command=self.delete_appointment
+        )
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή")
+        self.delete_button = ttk.Button(
+            self.buttons_frame,
+            text="Εξαγωγή",
+            command=lambda: export_all_appointments_to_xlsx(
+                self.appointment_manager, self.client_manager, "exports"
+            ),
+        )
         self.delete_button.grid(row=0, column=3, padx=5, pady=5)
 
         # Δημιουργία των widgets για τη λίστα ραντεβού
@@ -100,45 +123,18 @@ class Appointments:
 
         self.scrollbar.config(command=self.listbox.yview)
 
-        # Πεδία αναζήτησης
+        # Πεδίο αναζήτησης
         self.search_frame = ttk.Frame(self.list_frame)
         self.search_frame.pack(fill="x", expand=True)
 
-        # Πεδίο αναζήτησης για ημερομηνία
-        self.date_search_frame = ttk.Frame(self.search_frame)
-        self.date_search_frame.pack(fill="x", expand=True)
+        self.search_entry = ttk.Entry(self.search_frame, textvariable=self.search_terms)
+        self.search_entry.pack(side="left", fill="x", expand=True, padx=5, pady=5)
 
-        self.date_search_label = ttk.Label(
-            self.date_search_frame, text="Αναζήτηση με ημερομηνία           :"
-        )
-        self.date_search_label.pack(side="left", padx=5, pady=5)
-
-        self.date_search_entry = DateEntry(
-            self.date_search_frame, date_pattern="dd/mm/yyyy"
-        )
-        self.date_search_entry.pack(side="left", fill="x", expand=True, padx=5, pady=5)
-
-        self.date_search_button = ttk.Button(self.date_search_frame, text="Αναζήτηση")
-        self.date_search_button.pack(side="left", padx=5, pady=5)
-
-        # Πεδίο αναζήτησης για τον πελάτη
-        self.client_search_frame = ttk.Frame(self.search_frame)
-        self.client_search_frame.pack(fill="x", expand=True)
-
-        self.client_search_label = ttk.Label(
-            self.client_search_frame, text="Αναζήτηση με τηλέφωνο/Email  :"
-        )
-        self.client_search_label.pack(side="left", padx=5, pady=5)
-
-        self.client_search_entry = ttk.Entry(self.client_search_frame)
-        self.client_search_entry.pack(
-            side="left", fill="x", expand=True, padx=5, pady=5
-        )
-
-        self.client_search_button = ttk.Button(
-            self.client_search_frame, text="Αναζήτηση"
-        )
-        self.client_search_button.pack(side="left", padx=5, pady=5)
+        self.search_label = ttk.Label(self.search_frame, text="Αναζήτηση")
+        self.search_label.pack(side="right", fill="x", expand=True, padx=5, pady=5)
+        # Πεδία αναζήτησης
+        self.search_frame = ttk.Frame(self.list_frame)
+        self.search_frame.pack(fill="x", expand=True)
 
         self.populate_listbox()
 
@@ -160,28 +156,100 @@ class Appointments:
             self.employee_combobox.get(),
         ]
 
-    def populate_listbox(self, appointments=None):
+    def populate_listbox(self, appointments=None, show_empty=False):
         self.listbox.delete(0, "end")
+        if show_empty:
+            return
 
         if not appointments:
             appointments = self.appointment_manager.get_all_appointments()
-            print(appointments)
 
         for a in appointments:
             id, name, date, duration, client_id, employee_id = a
-            self.listbox.insert("end", 
-                f"{id} {name} {date} {duration} {client_id} {employee_id}"
+            client = (
+                self.client_manager.get_client(client_id)[1]
+                + " "
+                + self.client_manager.get_client(client_id)[2]
+            )
+            employee = self.employee_manager.get_employee(employee_id)[1]
+            self.listbox.insert(
+                "end",
+                f"{id} {client} at: {date} for: {duration}mins {name} with: {employee}",
             )
 
     def add_appointment(self):
         fields = self.get_fields()
-        print(fields)
         emp_name = fields[5]
         phone = fields[1]
         client_id = self.client_manager.get_id_from_phone(phone)[0]
-        employee_id = self.employee_manager.get_id_from_name(emp_name)
+        employee_id = self.employee_manager.get_id_from_name(emp_name)[0]
         print(fields[2])
-        self.appointment_manager.add_appointment(fields[0].strip(), datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"), int(fields[4]), client_id, employee_id)
+        self.appointment_manager.add_appointment(
+            fields[0].strip(),
+            datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"),
+            int(fields[4]),
+            client_id,
+            employee_id,
+        )
 
         self.clear_fields()
         self.populate_listbox()
+
+    def get_appointment_id_from_listbox(self):
+        values = self.listbox.curselection()
+        index = values[0]
+        self.curselection = int(self.listbox.get(index).split()[0])
+
+    def edit_appointment(self):
+        self.get_appointment_id_from_listbox()
+        apt = self.appointment_manager.get_appointment(self.curselection)
+        self.clear_fields()
+
+        client_id = apt[4]
+        phone = self.client_manager.get_client(client_id)[3]
+
+        self.phone_entry.insert(0, phone)
+        self.duration_entry.insert(0, apt[3])
+
+    def update_appointment(self):
+        fields = self.get_fields()
+        emp_name = fields[5]
+        phone = fields[1]
+        client_id = self.client_manager.get_id_from_phone(phone)[0]
+        employee_id = self.employee_manager.get_id_from_name(emp_name)[0]
+        print(fields[2])
+        self.appointment_manager.update_appointment(
+            self.curselection,
+            fields[0].strip(),
+            datetime.strptime(f"{fields[2]} {fields[3]}", "%d/%m/%Y %H:%M"),
+            int(fields[4]),
+            client_id,
+            employee_id,
+        )
+
+        self.clear_fields()
+        self.populate_listbox()
+
+    def delete_appointment(self):
+        self.get_appointment_id_from_listbox()
+        self.appointment_manager.delete_appointment(self.curselection)
+        self.populate_listbox()
+
+    def search_appointments(self):
+        search_term = self.search_terms.get()
+        self.populate_listbox()
+        items = self.listbox.get(0, "end")
+        filtered = []
+        for item in items:
+            if search_term in item:
+                filtered.append(item.split()[0])
+
+        # appointments = self.appointment_manager.search_appointments(search_term)
+        appointments = []
+        for i in filtered:
+            appointments.append(self.appointment_manager.get_appointment(i))
+
+        if appointments == []:
+            self.populate_listbox(appointments, True)
+        else:
+            self.populate_listbox(appointments)
