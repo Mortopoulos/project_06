@@ -60,8 +60,10 @@ def export_all_appointments_to_xlsx(
     wb.save(filepath)
 
     # Export message
-    messagebox.showinfo("Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς")
-    
+    messagebox.showinfo(
+        "Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς"
+    )
+
     # Return the filepath of the exported spreadsheet
     return filepath
 
@@ -99,8 +101,10 @@ def export_all_clients_to_xlsx(
     wb.save(filepath)
 
     # Export message
-    messagebox.showinfo("Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς")
-    
+    messagebox.showinfo(
+        "Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς"
+    )
+
     return filepath
 
 

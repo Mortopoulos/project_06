@@ -85,7 +85,11 @@ class Customers:
         self.list_frame.grid_rowconfigure(0, weight=1)
         self.list_frame.grid_columnconfigure(0, weight=1)
 
-        self.tree = ttk.Treeview(self.list_frame, columns=("ID", "Name", "Surname", "Phone", "Email"), show="headings")
+        self.tree = ttk.Treeview(
+            self.list_frame,
+            columns=("ID", "Name", "Surname", "Phone", "Email"),
+            show="headings",
+        )
         self.tree.pack(side="left", fill="both", expand=True)
 
         self.tree.column("ID", width=50)
@@ -120,7 +124,7 @@ class Customers:
         values = self.tree.selection()
         if values:
             item = self.tree.item(values[0])
-            self.curselection = int(item['values'][0])
+            self.curselection = int(item["values"][0])
 
     def clear_fields(self):
         self.name_entry.delete(0, "end")
@@ -140,15 +144,17 @@ class Customers:
         # Populate the treeview with client data
         for client in clients:
             client_id, first_name, last_name, phone, email = client
-            self.tree.insert("", "end", values=(client_id, first_name, last_name, phone, email))
-            
+            self.tree.insert(
+                "", "end", values=(client_id, first_name, last_name, phone, email)
+            )
+
     def add_client(self):
         first_name = self.name_entry.get()
         last_name = self.surname_entry.get()
         phone = self.phone_entry.get()
         email = self.email_entry.get()
         success = self.client_manager.add_client(first_name, last_name, phone, email)
-        
+
         self.clear_fields()
         self.populate_treeview()
 
@@ -168,7 +174,9 @@ class Customers:
         last_name = self.surname_entry.get()
         phone = self.phone_entry.get()
         email = self.email_entry.get()
-        self.client_manager.update_client(self.curselection, first_name, last_name, phone, email)
+        self.client_manager.update_client(
+            self.curselection, first_name, last_name, phone, email
+        )
         self.clear_fields()
         self.populate_treeview()
 
