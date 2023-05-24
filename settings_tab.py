@@ -79,13 +79,13 @@ class Settings:
         self.surname_entry = ttk.Entry(self.buttons_frame)
         self.surname_entry.grid(row=1, column=1, sticky="ew", padx=5, pady=5)
 
-        self.email_label = ttk.Label(self.buttons_frame, text="Email    :")
+        self.email_label = ttk.Label(self.buttons_frame, text="Email            :")
         self.email_label.grid(row=2, column=0)
 
         self.email_entry = ttk.Entry(self.buttons_frame)
         self.email_entry.grid(row=2, column=1, sticky="ew", padx=5, pady=5)
 
-        self.passcode_label = ttk.Label(self.buttons_frame, text="Pass    :")
+        self.passcode_label = ttk.Label(self.buttons_frame, text="Pass              :")
         self.passcode_label.grid(row=3, column=0)
 
         self.passcode_entry = ttk.Entry(self.buttons_frame)
@@ -94,12 +94,12 @@ class Settings:
         self.add_button = ttk.Button(
             self.buttons_frame, text="Προσθήκη", command=self.add_employee
         )
-        self.add_button.grid(row=1, column=2, padx=5, pady=5)
+        self.add_button.grid(row=3, column=2, padx=5, pady=5)
 
         self.delete_button = ttk.Button(
             self.buttons_frame, text="Διαγραφή", command=self.delete_employee
         )
-        self.delete_button.grid(row=1, column=3, padx=5, pady=5)
+        self.delete_button.grid(row=3, column=3, padx=5, pady=5)
 
         # Σύνδεση κουμπιών με λειτουργίες
         self.add_button.config(command=self.add_employee)

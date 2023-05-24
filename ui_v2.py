@@ -12,7 +12,8 @@ class MainApplication:
     def __init__(self):
         self.root = ThemedTk(theme="Adapta")
         self.root.title("SchedulEasy")
-        self.center_window(0.8, 0.8)  # Το παράθυρο θα καταλαμβάνει το 80% της οθόνης
+        # Το παράθυρο θα καταλαμβάνει το 80% της οθόνης
+        self.center_window(0.8, 0.8)
 
         # Ρυθμίζει το style των tabs
         style = ttk.Style()

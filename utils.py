@@ -1,6 +1,7 @@
 from client_manager import ClientManager
 from appointment_manager import AppointmentManager
 from employee_manager import EmployeeManager
+from tkinter import messagebox
 
 import os
 import smtplib
@@ -58,6 +59,9 @@ def export_all_appointments_to_xlsx(
     # Save the workbook to the specified filepath
     wb.save(filepath)
 
+    # Export message
+    messagebox.showinfo("Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς")
+    
     # Return the filepath of the exported spreadsheet
     return filepath
 
@@ -93,6 +97,10 @@ def export_all_clients_to_xlsx(
     filename = "clients.xlsx"
     filepath = os.path.join(destination_folder_path, filename)
     wb.save(filepath)
+
+    # Export message
+    messagebox.showinfo("Εξαγωγή σε Excel", "Η εξαγωγή του αρχείου ολοκληρώθηκε επιτυχώς")
+    
     return filepath
 
 
