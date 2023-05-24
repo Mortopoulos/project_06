@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 # Add all of the necessary imports
 
@@ -98,7 +98,7 @@ class AppointmentManager:
     def get_appointments_on_date(self, date):
         # Retrieve appointments from the 'appointments' table for a specific date
         self.cursor.execute(
-            "SELECT * FROM appointments WHERE DATE(date)=DATE(?)", (date,)
+            f"SELECT * FROM appointments WHERE date LIKE '{date}%';"
         )
 
         # Return the fetched appointments

@@ -1,4 +1,3 @@
-import tkinter as tk
 from tkinter import StringVar, ttk
 
 from client_manager import ClientManager

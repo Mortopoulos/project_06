@@ -18,7 +18,7 @@ from openpyxl.utils import get_column_letter
 
 
 def export_all_appointments_to_xlsx(
-    appointment_manager, client_manager, destination_folder_path
+    appointment_manager, client_manager, destination_folder_path, date=None
 ):
     # Create a new workbook and select the active sheet
     wb = Workbook()
@@ -35,8 +35,12 @@ def export_all_appointments_to_xlsx(
         cell.font = Font(bold=True)
         cell.fill = PatternFill(patternType="solid", fgColor=Color(rgb="C6EFCE"))
 
-    # Retrieve all appointments from the appointment manager
-    appointments = appointment_manager.get_all_appointments()
+    if not date:
+        # Retrieve all appointments from the appointment manager
+        appointments = appointment_manager.get_all_appointments()
+    else:
+        appointments = appointment_manager.get_appointments_on_date(date)
+        print(appointments)
 
     # Iterate over the appointments and populate the spreadsheet
     for row_num, appointment in enumerate(appointments, 2):
@@ -108,12 +112,10 @@ def export_all_clients_to_xlsx(
     return filepath
 
 
-def send_reminders_to_clients_at_date(
-    appointment_manager, client_manager, date, employee
-):
+def send_reminders_to_clients_at_date(appointment_manager, client_manager, date):
     # Retrieve the email and pass code of the employee
-    email = employee[3]
-    pass_code = employee[4]
+    email = "dr.georgepapadopoulos@gmail.com"
+    pass_code = "sphgkfocygdxfneu"
 
     # Create an SMTP server object and connect to the Gmail SMTP server
     smtp_server = smtplib.SMTP("smtp.gmail.com", 587)
@@ -124,19 +126,21 @@ def send_reminders_to_clients_at_date(
 
     # Iterate over appointments on the specified date
     for appointment in appointment_manager.get_appointments_on_date(date):
+        print(appointment)
         # Retrieve appointment information
         appointment_date = datetime.strptime(appointment[2], "%Y-%m-%d %H:%M:%S")
 
         # Set the locale to Greek for date formatting
-        import locale
+        # import locale
 
-        locale.setlocale(locale.LC_TIME, "el_GR")
+        # locale.setlocale(locale.LC_TIME, "el_GR")
 
         # Format the appointment date and time
         date_time = appointment_date.strftime("%A, %d-%b-%Y, %H:%M:%S")
 
         # Retrieve client information for the appointment
         client = client_manager.get_client(appointment[4])
+        print(client)
 
         # Compose the email message
         message = MIMEText(
@@ -158,8 +162,6 @@ def send_reminders_to_clients_at_date(
 def get_stats_in_date_range(
     appointment_manager: AppointmentManager,
     employee_manager: EmployeeManager,
-    start: datetime,
-    end: datetime,
 ):
     # Retrieve all employees
     all_employees = employee_manager.get_all_employees()
@@ -171,11 +173,10 @@ def get_stats_in_date_range(
     # Iterate over each employee
     for employee_id, employee_name, *_ in all_employees:
         # Construct the SQL query to count the number of appointments for the employee within the specified date range
-        query = "SELECT COUNT(*) FROM appointments WHERE employee_id = ? AND date BETWEEN ? AND ?;"
-        params = (employee_id, start, end)
+        query = f"SELECT COUNT(*) FROM appointments WHERE employee_id = {employee_id};"
 
         # Execute the query
-        appointment_manager.cursor.execute(query, params)
+        appointment_manager.cursor.execute(query)
 
         # Fetch the result of the query
         amount = appointment_manager.cursor.fetchone()[0]

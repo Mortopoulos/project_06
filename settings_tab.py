@@ -4,6 +4,9 @@ import webbrowser
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from employee_manager import EmployeeManager
+from appointment_manager import AppointmentManager
+
+from utils import get_stats_in_date_range
 
 DATABASE_FILE = "app.db"
 
@@ -11,6 +14,7 @@ DATABASE_FILE = "app.db"
 class Settings:
     def __init__(self, tab):
         self.employee_manager = EmployeeManager(DATABASE_FILE)
+        self.appointment_manager = AppointmentManager(DATABASE_FILE)
         self.tab = tab
         self.tab.grid_rowconfigure(0, weight=1)
         self.tab.grid_columnconfigure(0, weight=1)
@@ -152,35 +156,12 @@ class Settings:
         pass
 
     def update_plot(self):
-        # Εδώ πρέπει να ενημερώσετε τα δεδομένα του διαγράμματος σύμφωνα με τη βάση δεδομένων
-        # Αυτό είναι ένα παράδειγμα:
-        self.ax.cla()  # clear the plot
-        self.ax.set_title("Διάγραμμα απόδοσης υπαλλήλων")
-        data = [
-            20,
-            15,
-            30,
-            25,
-            10,
-            34,
-            25,
-            40,
-            22,
-            80,
-        ]  # Αυτά είναι δεδομένα επίδοσης των υπαλλήλων για παράδειγμα
-        self.ax.barh(
-            [
-                "Υπάλληλος 1",
-                "Υπάλληλος 2",
-                "Υπάλληλος 3",
-                "Υπάλληλος 4",
-                "Υπάλληλος 5",
-                "Υπάλληλος 6",
-                "Υπάλληλος 7",
-                "Υπάλληλος 8",
-                "Υπάλληλο 9",
-                "Υπάλληλος 10",
-            ],
-            data,
-        )
-        self.canvas.draw()
+        stats = get_stats_in_date_range(self.appointment_manager, self.employee_manager)
+        keys = list(stats.keys())
+        values = list(stats.values())
+
+        plt.bar(keys, values)
+        plt.title('Dictionary Data')
+        plt.xlabel('Keys')
+        plt.ylabel('Values')
+        plt.show()
