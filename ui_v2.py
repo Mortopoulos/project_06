@@ -12,13 +12,14 @@ class MainApplication:
     def __init__(self):
         self.root = ThemedTk(theme="Adapta")
         self.root.title("SchedulEasy")
+        #self.root.iconbitmap('icon.ico')
+
         # Το παράθυρο θα καταλαμβάνει το 80% της οθόνης
-        self.center_window(0.8, 0.8)
+        self.center_window(0.75, 0.75)
 
         # Ρυθμίζει το style των tabs
         style = ttk.Style()
         style.configure("TNotebook.Tab", font=("Helvetica", "12"), padding=[12, 6])
-        # style.map('TNotebook.Tab', background=[('selected', 'blue')], foreground=[('selected', 'black')])
 
         # Δημιουργία tabs
         self.tab_parent = ttk.Notebook(self.root)

@@ -131,9 +131,9 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date)
         appointment_date = datetime.strptime(appointment[2], "%Y-%m-%d %H:%M:%S")
 
         # Set the locale to Greek for date formatting
-        # import locale
+        import locale
 
-        # locale.setlocale(locale.LC_TIME, "el_GR")
+        locale.setlocale(locale.LC_TIME, "el_GR")
 
         # Format the appointment date and time
         date_time = appointment_date.strftime("%A, %d-%b-%Y, %H:%M:%S")
@@ -154,6 +154,9 @@ def send_reminders_to_clients_at_date(appointment_manager, client_manager, date)
 
         # Send the email to the client
         smtp_server.sendmail(email, client[4], message.as_string())
+
+    # Export message
+    messagebox.showinfo("Αποστολή Email", "Η απόστολη των ειδοποιήσεων ολοκληρώθηκε επιτυχώς")
 
     # Disconnect from the SMTP server
     smtp_server.quit()

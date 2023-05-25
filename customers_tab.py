@@ -47,35 +47,26 @@ class Customers:
         self.email_entry = ttk.Entry(self.info_frame)
         self.email_entry.grid(row=3, column=1, sticky="ew", padx=5, pady=5)
 
+        self.phone_label = ttk.Label(self.info_frame, text="Τηλέφωνο :")
+        self.phone_label.grid(row=2, column=0)
+
         # Κουμπιά επεξεργασίας
         self.buttons_frame = ttk.Frame(self.customer_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.add_button = ttk.Button(
-            self.buttons_frame, text="Προσθήκη", command=self.add_client
-        )
+        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_client)
         self.add_button.grid(row=0, column=0, padx=5, pady=5)
 
-        self.edit_button = ttk.Button(
-            self.buttons_frame, text="Επεξεργασία", command=self.edit_client
-        )
+        self.edit_button = ttk.Button(self.buttons_frame, text="Επεξεργασία", command=self.edit_client)
         self.edit_button.grid(row=0, column=1, padx=5, pady=5)
 
-        self.update_button = ttk.Button(
-            self.buttons_frame, text="Ανανέωση", command=self.update_client
-        )
+        self.update_button = ttk.Button(self.buttons_frame, text="Ανανέωση", command=self.update_client)
         self.update_button.grid(row=1, column=1, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(
-            self.buttons_frame, text="Διαγραφή", command=self.delete_client
-        )
+        self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή", command=self.delete_client)
         self.delete_button.grid(row=0, column=2, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(
-            self.buttons_frame,
-            text="Εξαγωγή",
-            command=lambda: export_all_clients_to_xlsx(self.client_manager, "exports"),
-        )
+        self.delete_button = ttk.Button(self.buttons_frame, text="Εξαγωγή", command=lambda: export_all_clients_to_xlsx(self.client_manager, "exports"),)
         self.delete_button.grid(row=0, column=3, padx=5, pady=5)
 
         # Δημιουργία των widgets για τη λίστα πελατών
@@ -187,6 +178,20 @@ class Customers:
 
     def search_client(self):
         search_term = self.search_terms.get()
-        clients = self.client_manager.search_clients(search_term)
-        self.clear_fields()
-        self.populate_treeview(clients)
+        if search_term:
+            clients = self.client_manager.search_clients(search_term)
+            self.clear_fields()
+            if clients:
+                self.populate_treeview(clients)
+            else:
+                for i in self.tree.get_children():
+                    self.tree.delete(i)
+        else:
+            search_term = self.search_terms.get()
+            clients = self.client_manager.search_clients(search_term)
+            self.clear_fields()
+            self.populate_treeview(clients)
+
+
+
+
