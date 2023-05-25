@@ -58,12 +58,18 @@ class ClientManager:
         )
         messagebox.showinfo("Καταχώρηση", "Ο Πελάτης Καταχωρήθηκε επιτυχώς")
         self.conn.commit()
-        # return
+        
 
     # Συνάρτηση για τη διαγραφή πελάτη
     def delete_client(self, id):
-        self.cursor.execute("DELETE FROM clients WHERE id=?", (id,))
-        self.conn.commit()
+        confirmation = messagebox.askquestion("Επιβεβαίωση Διαγραφής", "Είστε βέβαιος ότι θέλετε να διαγράψετε τον πελάτη;")
+        if confirmation == "yes":
+            self.cursor.execute("DELETE FROM clients WHERE id=?", (id,))
+            self.conn.commit()
+            messagebox.showinfo("Διαγραφή Πελάτη", "Ο πελάτης διαγράφηκε επιτυχώς.")
+        else:
+            messagebox.showinfo("Ακύρωση Διαγραφής", "Η διαγραφή του πελάτη ακυρώθηκε.")
+
 
     # Συνάρτηση για την αναζήτηση πελάτη
     def search_clients(self, search_term):

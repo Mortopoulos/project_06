@@ -28,30 +28,16 @@ class Settings:
         self.info_frame = ttk.Frame(self.employee_frame)
         self.info_frame.pack(fill="x", expand=True)
 
-        # Διάγραμμα απόδοσης υπαλλήλων
-        self.fig = plt.Figure(figsize=(4, 4), dpi=100)
-        self.ax = self.fig.add_subplot(111)
-        self.ax.set_title("Διάγραμμα απόδοσης υπαλλήλων")
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self.employee_frame)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().pack(side=tk.TOP, fill=tk.BOTH, expand=1)
-
         # Κουμπιά επεξεργασίας
         self.buttons_frame = ttk.Frame(self.employee_frame)
         self.buttons_frame.pack(fill="x", expand=True)
 
-        self.report_button = ttk.Button(
-            self.buttons_frame, text="Έκθεση", command=self.open_report
-        )
+        self.report_button = ttk.Button(self.buttons_frame, text="Έκθεση", command=self.open_report)
         self.report_button.grid(row=0, column=0)
 
         self.guide_button = ttk.Button(self.buttons_frame, text="Οδηγίες")
         self.guide_button.grid(row=0, column=1)
 
-        self.update_button = ttk.Button(
-            self.buttons_frame, text="Ενημέρωση Διαγράμματος", command=self.update_plot
-        )
-        self.update_button.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
 
         # Δημιουργία των widgets για τη λίστα υπαλλήλων
         self.list_frame = ttk.LabelFrame(self.tab, text="Λίστα Υπαλλήλων")
@@ -95,14 +81,10 @@ class Settings:
         self.passcode_entry = ttk.Entry(self.buttons_frame)
         self.passcode_entry.grid(row=3, column=1, sticky="ew", padx=5, pady=5)
 
-        self.add_button = ttk.Button(
-            self.buttons_frame, text="Προσθήκη", command=self.add_employee
-        )
+        self.add_button = ttk.Button(self.buttons_frame, text="Προσθήκη", command=self.add_employee)
         self.add_button.grid(row=3, column=2, padx=5, pady=5)
 
-        self.delete_button = ttk.Button(
-            self.buttons_frame, text="Διαγραφή", command=self.delete_employee
-        )
+        self.delete_button = ttk.Button(self.buttons_frame, text="Διαγραφή", command=self.delete_employee)
         self.delete_button.grid(row=3, column=3, padx=5, pady=5)
 
         # Σύνδεση κουμπιών με λειτουργίες
@@ -129,10 +111,9 @@ class Settings:
         # Populate the listbox with client data
         for emp in employees:
             emp_id, name, email, passcode = emp
-            self.employees_list.insert(
-                "", "end", values=(name, email)
-            )  # Προσθήκη στη λίστα
-
+            self.employees_list.insert("", "end", values=(name, email))  
+            
+    # Προσθήκη στη λίστα
     def add_employee(self):
         name = self.name_entry.get()
         surname = self.surname_entry.get()
@@ -141,11 +122,11 @@ class Settings:
 
         fullname = name + " " + surname
 
-        if fullname and email and passcode:  # Αν τα πεδία δεν είναι κενά
+        if fullname and email and passcode:  
             print(fullname, email, passcode)
             self.employee_manager.add_employee(fullname, email, passcode)
 
-        self.name_entry.delete(0, "end")  # Καθαρισμός των πεδίων
+        self.name_entry.delete(0, "end")  
         self.surname_entry.delete(0, "end")
         self.email_entry.delete(0, "end")
         self.passcode_entry.delete(0, "end")
@@ -153,15 +134,10 @@ class Settings:
         self.populate_listbox()
 
     def delete_employee(self):
-        pass
-
-    def update_plot(self):
-        stats = get_stats_in_date_range(self.appointment_manager, self.employee_manager)
-        keys = list(stats.keys())
-        values = list(stats.values())
-
-        plt.bar(keys, values)
-        plt.title('Dictionary Data')
-        plt.xlabel('Keys')
-        plt.ylabel('Values')
-        plt.show()
+        selected_items = self.employees_list.selection() 
+        if selected_items: 
+            for selected_item in selected_items:
+                item = self.employees_list.item(selected_item)  
+                name, email = item['values']  
+                self.employee_manager.delete_employee(email)  
+            self.tab.after(100, self.populate_listbox)

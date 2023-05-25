@@ -1,4 +1,6 @@
 import sqlite3
+from tkinter import messagebox
+
 
 # Add all of the necessary imports
 
@@ -27,9 +29,9 @@ class EmployeeManager:
         # Commit the changes to the database
         self.conn.commit()
 
-    def delete_employee(self, id):
-        # Delete an employee from the 'employees' table based on the employee ID
-        self.cursor.execute("DELETE FROM employees WHERE id=?", (id,))
+    def delete_employee(self, email):
+        # Delete an employee from the 'employees' table based on the employee email
+        self.cursor.execute("DELETE FROM employees WHERE email=?", (email,))
 
         # Commit the changes to the database
         self.conn.commit()

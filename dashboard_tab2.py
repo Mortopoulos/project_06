@@ -37,35 +37,33 @@ class Dashboard:
         self.appointment_frame.grid_rowconfigure(0, weight=1)
         self.appointment_frame.grid_columnconfigure(0, weight=1)
 
-        self.tree = ttk.Treeview(
-            self.appointment_frame,
-            columns=("id", "Πελάτης", "Ημέρα και Ώρα", "Διάρκεια", "Σχόλια", "Υπάλληλος"),
-            show="headings",
-        )
+        self.scrollbar = ttk.Scrollbar(self.appointment_frame)
+        self.scrollbar.pack(side="right", fill="y")
+
+        self.tree = ttk.Treeview(self.appointment_frame, selectmode="browse")
         self.tree.pack(side="left", fill="both", expand=True)
 
+        vsb = ttk.Scrollbar(self.appointment_frame, orient="vertical", command=self.tree.yview)
+        vsb.pack(side='left', fill='y')
+
+        self.tree.configure(yscrollcommand=vsb.set)
+
+        self.tree["columns"] = ("id", "Πελάτης", "Ημέρα και Ώρα", "Διάρκεια", "Σχόλια", "Υπάλληλος")
         self.tree.column("#0", width=0, stretch=False)
         self.tree.column("id", width=0, stretch=False)  
         self.tree.column("Πελάτης", width=10, stretch=True)  
         self.tree.column("Ημέρα και Ώρα", width=10, stretch=True) 
         self.tree.column("Διάρκεια", width=10, stretch=True) 
         self.tree.column("Σχόλια", width=10, stretch=True) 
-        self.tree.column("Υπάλληλος", width=10, stretch=True) 
+        self.tree.column("Υπάλληλος", width=10, stretch=True)
 
-        self.tree.heading("id", text="ID")
-        self.tree.heading("Πελάτης", text="Πελάτης")
-        self.tree.heading("Ημέρα και Ώρα", text="Ημέρα και Ώρα")
-        self.tree.heading("Διάρκεια", text="Διάρκεια")
-        self.tree.heading("Σχόλια", text="Σχόλια")
-        self.tree.heading("Υπάλληλος", text="Υπάλληλος")
-
-        self.scrollbar = ttk.Scrollbar(self.appointment_frame, command=self.tree.yview)
-        self.scrollbar.pack(side="right", fill="y")
-        self.tree.config(yscrollcommand=self.scrollbar.set)
+        for col in self.tree["columns"][1:]:
+            self.tree.heading(col, text=col)
 
         # Κουμπιά διαχείρισης
-        self.buttons_frame = ttk.Frame(self.appointment_frame)
-        self.buttons_frame.pack(fill="x", expand=True)
+        
+        self.buttons_frame = ttk.Frame(self.tab)
+        self.buttons_frame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)  # Place the buttons below the Treeview
 
         self.date_label = ttk.Label(self.buttons_frame, text="Ημερομηνία   :")
         self.date_label.grid(row=0, column=2, padx=5, pady=5)
@@ -80,9 +78,15 @@ class Dashboard:
         self.print_button = ttk.Button(self.buttons_frame, text="Εκτύπωση Ραντεβού", command=self.print_appointments,)
         self.print_button.grid(row=1, column=3, padx=5, pady=5)
 
+        # Don't forget to adjust row weights after adding the new row
+        self.tab.grid_rowconfigure(0, weight=1)  # for treeview
+        self.tab.grid_rowconfigure(1, weight=0)  # for buttons_frame
+        self.tab.grid_columnconfigure(0, weight=1)  # Maintain a small weight for column 0
+        self.tab.grid_columnconfigure(1, weight=4)
+
         # Adjust the weight of the columns and rows in the main grid
         self.tab.grid_rowconfigure(0, weight=1)
-        self.tab.grid_columnconfigure(0, weight=1)  
+        self.tab.grid_columnconfigure(0, weight=1)  # Maintain a small weight for column 0
         self.tab.grid_columnconfigure(1, weight=4)
 
         # Δημιουργία των widgets για την ομάδα προγραμματιστών
